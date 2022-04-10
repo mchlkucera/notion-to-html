@@ -1,9 +1,30 @@
-var express = require("express");
-var router = express.Router();
+const { getBlocks } = require("../lib/notion");
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-   res.render("index", { title: "Express" });
-});
-
-module.exports = router;
+exports.index = async (req, res) => {
+   const { pageId } = req.params;
+   try {
+      const blocks = await getBlocks(pageId);
+      const childBlocks = await Promise.all(
+         blocks
+            .filter((block) => block.has_children)
+            .map(async (block) => {
+               return {
+                  id: block.id,
+                  children: await getBlocks(block.id),
+               };
+            })
+      );
+      const blocksWithChildren = blocks.map((block) => {
+         if (block.has_children && !block[block.type].children) {
+            block[block.type]["children"] = childBlocks.find(
+               (x) => x.id === block.id
+            ).children;
+         }
+         return block;
+      });
+      res.render("index", { blocks: blocksWithChildren });
+   } catch (err) {
+      console.log(err);
+      res.status(500).send(JSON.parse(err?.body).message);
+   }
+};
