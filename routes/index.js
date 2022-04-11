@@ -4,6 +4,7 @@ exports.index = async (req, res) => {
    const { pageId } = req.params;
    try {
       const params = req.query;
+      console.log({ params });
       const blocks = await getBlocks(pageId);
       const childBlocks = await Promise.all(
          blocks
