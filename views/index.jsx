@@ -1,4 +1,3 @@
-const { style } = require("jade/lib/runtime");
 const React = require("react");
 const { Fragment } = require("react");
 const styles = require("../styles/styles.js");
@@ -178,21 +177,29 @@ const renderBlock = ({ block, params }) => {
          );
       case "code":
          return (
-            <pre
-               className="pre"
-               style={{
-                  color,
-                  backgroundColor: "rgb(242, 242, 242)",
-                  padding: "2px 4px",
-                  margin: "20px 0",
-                  lineHeight: "2.3",
-                  overflow: "auto",
-               }}
-            >
-               <code className="code" key={id}>
-                  {value.rich_text[0].plain_text}
-               </code>
-            </pre>
+            <div style={{ color, margin: "20px 0" }}>
+               <pre
+                  className="pre"
+                  style={{
+                     backgroundColor: "rgb(242, 242, 242)",
+                     padding: "2px 4px",
+                     margin: "4px 0",
+                     lineHeight: "2.3",
+                     overflow: "auto",
+                  }}
+               >
+                  <code className="code" key={id}>
+                     {value.rich_text[0].plain_text}
+                  </code>
+               </pre>
+               <div
+                  style={{
+                     padding: "6px 2px 6px",
+                  }}
+               >
+                  <Text text={value.caption} />
+               </div>
+            </div>
          );
       case "file":
          const src_file =

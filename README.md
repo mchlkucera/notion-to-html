@@ -1,7 +1,7 @@
 ## Current limitations
 
--  child blocks only allowed 1 level deep on _toggle_ and _list_ blocks (both u)
--  Both ordered and unordered list will be converted to unordered lists
+-  Child blocks are only supported on **toggle** and **list** and **to_do** blocks. Child blocks only available one level deep.
+-  Ordered list will be converted to unordered list
 
 ## Supported blocks
 
@@ -9,10 +9,10 @@
 -  heading_1
 -  heading_2
 -  heading_3
--  bulleted_list_item (searches for child pages one block deep)
--  numbered_list_item (converted to unordered list) (searches for child pages one block deep)
+-  bulleted_list_item
+-  numbered_list_item (is converted to unordered list)
 -  to_do
--  toggle (searches for child pages one block deep)
+-  toggle
 -  child_page (link)
 -  image
 -  divider
@@ -34,5 +34,5 @@
 
 ## Optional header params
 
--  `forWebflow`: adds classes and optimization for Webflow Richtext
+-  `forWebflow`: adds classes and optimization for Webflow Richtext (expects boolean values)
    -  imgs: lazy loading, added classes
