@@ -179,18 +179,14 @@ const renderBlock = ({ block, params }) => {
          return (
             <div style={{ color, margin: "20px 0" }}>
                <pre
-                  className="pre"
                   style={{
-                     backgroundColor: "rgb(242, 242, 242)",
                      padding: "2px 4px",
                      margin: "4px 0",
                      lineHeight: "2.3",
                      overflow: "auto",
                   }}
                >
-                  <code className="code" key={id}>
-                     {value.rich_text[0].plain_text}
-                  </code>
+                  <code key={id}>{value.rich_text[0].plain_text}</code>
                </pre>
                <div
                   style={{
