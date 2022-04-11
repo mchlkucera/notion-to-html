@@ -2,7 +2,7 @@ const React = require("react");
 const { Fragment } = require("react");
 const styles = require("../styles/styles.js");
 
-const textColor = {
+const textColors = {
    blue: "#3998DC",
    purple: "#9B5AB7",
    green: "#5DBE9F",
@@ -11,7 +11,7 @@ const textColor = {
    red: "#E74C3C",
    yellow: "#DFAB2D",
 };
-const backgroundColor = {
+const backgroundColors = {
    red: "#F9DCDA",
    yellow: "#FDEBB9",
    green: "#D6FAD8",
@@ -34,7 +34,7 @@ const Text = ({ text }) => {
       } = value;
       const codeStyles = code ? styles.code : {};
       const annotationStyles = {
-         textWeight: bold ? "bold" : "",
+         fontWeight: bold ? "bold" : "",
          fontStyle: italic ? "italic" : "",
          textDecoration: strikethrough
             ? "line-through"
@@ -42,30 +42,27 @@ const Text = ({ text }) => {
             ? "underline"
             : "",
       };
+      const mergedStyles = {
+         ...codeStyles,
+         ...annotationStyles,
+         color: color !== "default" ? textColors[color] : "",
+      };
 
       // Replace newlines with <br />
+      // + double "\n" prevention
       const hasNewlines = text.content.includes("\n");
+      const splitNewline = hasNewlines && text.content.split("\n");
       const textContent = !hasNewlines
          ? text.content
-         : text.content
-              .split("\n")
-              .filter((x) => x.length > 0)
-              .map((line, i) => (
-                 <Fragment key={i}>
-                    {line}
-                    <br />
-                 </Fragment>
-              ));
+         : splitNewline.map((line, i) => (
+              <Fragment key={i}>
+                 {line}
+                 {splitNewline.length - 1 > i && <br />}
+              </Fragment>
+           ));
 
       return (
-         <span
-            style={{
-               ...codeStyles,
-               ...annotationStyles,
-               color: color !== "default" ? color : "",
-            }}
-            className={code ? "code" : undefined}
-         >
+         <span style={mergedStyles} className={code ? "code" : undefined}>
             {text.link ? (
                <a href={text.link.url}>{textContent}</a>
             ) : (
@@ -80,7 +77,7 @@ const renderBlock = ({ block, params }) => {
    const { webflow } = params;
    const { type, id } = block;
    const value = block[type];
-   const color = value.color !== "default" ? value.color : "";
+   const color = value.color !== "default" ? textColors[value.color] : "";
 
    switch (type) {
       case "paragraph":
@@ -155,7 +152,7 @@ const renderBlock = ({ block, params }) => {
          // Makes image full width
          // - if "webflow" == true and caption is "fullwidth"
          // -> caption will be hidden + image will be 100% width
-         const center = webflow && plainCaption.includes("center");
+         const center = webflow && plainCaption == "center";
 
          return (
             <figure
@@ -231,7 +228,9 @@ const renderBlock = ({ block, params }) => {
          const { icon } = value;
          const imgSrc =
             icon.type === "external" ? icon.external.url : icon.file?.url;
-         const hasBackground = color.includes("background");
+
+         // Set up the callout styles
+         const hasBackground = value.color.includes("background");
          const calloutStyle = {
             padding: "16px 16px 16px 12px",
             display: "flex",
@@ -239,8 +238,8 @@ const renderBlock = ({ block, params }) => {
             margin: "4px 0",
          };
          const style = hasBackground
-            ? { background: backgroundColor[color.split("_")[0]] }
-            : { color, border: `1px solid ${textColor[color]}` };
+            ? { background: backgroundColors[value.color.split("_")[0]] }
+            : { color, border: `1px solid ${textColors[color]}` };
 
          return (
             <div className="callout" style={{ ...style, ...calloutStyle }}>
