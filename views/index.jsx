@@ -264,7 +264,7 @@ const renderBlock = ({ block, params }) => {
                   webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
                }
             >
-               <video autoplay muted controls>
+               <video autoplay muted controls style={{ width: "100%" }}>
                   <source src={value.file.url} type="video/mp4" />
                   Your browser does not support the video tag.
                </video>
