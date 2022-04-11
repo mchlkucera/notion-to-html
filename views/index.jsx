@@ -166,7 +166,11 @@ const renderBlock = ({ block, params }) => {
                      loading={webflow ? "lazy" : undefined}
                   />
                </div>
-               {caption && <figcaption>{caption}</figcaption>}
+               {caption && (
+                  <figcaption>
+                     <Text text={value.caption} />
+                  </figcaption>
+               )}
             </figure>
          );
       case "divider":
@@ -255,17 +259,17 @@ const renderBlock = ({ block, params }) => {
          );
       case "video":
          return (
-            <video
-               controls
-               autoplay
-               muted
+            <figure
                className={
                   webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
                }
             >
-               <source src={value.file.url} type="video/mp4" />
-               Your browser does not support the video tag.
-            </video>
+               <video autoplay muted controls>
+                  <source src={value.file.url} type="video/mp4" />
+                  Your browser does not support the video tag.
+               </video>
+               {value.caption && <figcaption>{value.caption}</figcaption>}
+            </figure>
          );
       default:
          return `❌ Unsupported block (${
