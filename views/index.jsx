@@ -260,9 +260,7 @@ const renderBlock = ({ block, params }) => {
                autoplay
                muted
                className={
-                  webflow
-                     ? ".w-richtext figure.w-richtext-align-fullwidth"
-                     : undefined
+                  webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
                }
             >
                <source src={value.file.url} type="video/mp4" />
