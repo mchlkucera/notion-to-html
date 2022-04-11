@@ -150,31 +150,31 @@ const renderBlock = ({ block, params }) => {
       case "image":
          const src =
             value.type === "external" ? value.external.url : value.file.url;
-         const caption = value.caption ? value.caption[0]?.plain_text : "";
+         const plainCaption = value.caption ? value.caption[0]?.plain_text : "";
 
          // Makes image full width
          // - if "webflow" == true and caption is "fullwidth"
          // -> caption will be hidden + image will be 100% width
-         const fullWidth = webflow && caption == "fullwidth";
+         const center = webflow && plainCaption == "center";
 
          return (
             <figure
                className={
-                  fullWidth
-                     ? "w-richtext-align-fullwidth w-richtext-figure-type-image"
-                     : webflow
+                  center
                      ? "w-richtext-align-center w-richtext-figure-type-image"
+                     : webflow
+                     ? "w-richtext-align-fullwidth w-richtext-figure-type-image"
                      : undefined
                }
             >
                <div>
                   <img
                      src={src}
-                     alt={caption}
+                     alt={plainCaption}
                      loading={webflow ? "lazy" : undefined}
                   />
                </div>
-               {caption && !fullWidth && (
+               {plainCaption && !center && (
                   <figcaption>
                      <Text text={value.caption} />
                   </figcaption>
@@ -272,7 +272,12 @@ const renderBlock = ({ block, params }) => {
                   webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
                }
             >
-               <video autoplay muted controls style={{ width: "100%" }}>
+               <video
+                  autoPlay={true}
+                  muted={true}
+                  controls={true}
+                  style={{ width: "100%" }}
+               >
                   <source src={value.file.url} type="video/mp4" />
                   Your browser does not support the video tag.
                </video>
