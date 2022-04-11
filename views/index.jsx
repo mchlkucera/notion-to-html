@@ -191,8 +191,10 @@ const renderBlock = ({ block, params }) => {
                   style={{
                      padding: "2px 4px",
                      margin: "4px 0",
-                     lineHeight: "2.3",
+                     tabSize: "2",
                      overflow: "auto",
+                     borderRadius: "8px",
+                     boxShadow: "0 0 8px rgba(0,4px,0,0.2)",
                   }}
                >
                   <code key={id}>{value.rich_text[0].plain_text}</code>
