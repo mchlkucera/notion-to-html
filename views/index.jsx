@@ -253,6 +253,13 @@ const renderBlock = ({ block, params }) => {
                </div>
             </div>
          );
+      case "video":
+         return (
+            <video controls autoplay muted>
+               <source src={value.file.url} type="video/mp4" />
+               Your browser does not support the video tag.
+            </video>
+         );
       default:
          return `❌ Unsupported block (${
             type === "unsupported" ? "unsupported by Notion API" : type

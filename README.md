@@ -20,6 +20,7 @@
 -  code
 -  file
 -  callout
+-  video
 
 ## Used libraries
 
