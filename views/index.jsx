@@ -50,7 +50,7 @@ const Text = ({ text }) => {
 
       // Replace newlines with <br />
       // + double "\n" prevention
-      const hasNewlines = text.content.includes("\n");
+      const hasNewlines = text.content && text.content.includes("\n");
       const splitNewline = hasNewlines && text.content.split("\n");
       const textContent = !hasNewlines
          ? text.content
