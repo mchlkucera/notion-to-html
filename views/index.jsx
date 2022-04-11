@@ -268,7 +268,11 @@ const renderBlock = ({ block, params }) => {
                   <source src={value.file.url} type="video/mp4" />
                   Your browser does not support the video tag.
                </video>
-               {value.caption && <figcaption>{value.caption}</figcaption>}
+               {value.caption && (
+                  <figcaption>
+                     <Text text={value.caption} />
+                  </figcaption>
+               )}
             </figure>
          );
       default:
