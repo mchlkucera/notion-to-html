@@ -155,7 +155,7 @@ const renderBlock = ({ block, params }) => {
          // Makes image full width
          // - if "webflow" == true and caption is "fullwidth"
          // -> caption will be hidden + image will be 100% width
-         const center = webflow && plainCaption == "center";
+         const center = webflow && plainCaption.includes("center");
 
          return (
             <figure
@@ -262,6 +262,9 @@ const renderBlock = ({ block, params }) => {
                </div>
                <div style={{ marginLeft: "8px" }}>
                   <Text text={value.rich_text} />
+                  {value.children?.map((block) => (
+                     <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                  ))}
                </div>
             </div>
          );
