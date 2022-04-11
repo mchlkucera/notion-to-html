@@ -255,7 +255,16 @@ const renderBlock = ({ block, params }) => {
          );
       case "video":
          return (
-            <video controls autoplay muted>
+            <video
+               controls
+               autoplay
+               muted
+               className={
+                  webflow
+                     ? ".w-richtext figure.w-richtext-align-fullwidth"
+                     : undefined
+               }
+            >
                <source src={value.file.url} type="video/mp4" />
                Your browser does not support the video tag.
             </video>
