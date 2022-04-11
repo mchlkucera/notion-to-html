@@ -3,6 +3,7 @@ const { getBlocks } = require("../lib/notion");
 exports.index = async (req, res) => {
    const { pageId } = req.params;
    try {
+      const params = req.query;
       const blocks = await getBlocks(pageId);
       const childBlocks = await Promise.all(
          blocks
@@ -22,7 +23,7 @@ exports.index = async (req, res) => {
          }
          return block;
       });
-      res.render("index", { blocks: blocksWithChildren });
+      res.render("index", { blocks: blocksWithChildren, params });
    } catch (err) {
       console.log(err);
       res.status(500).send(JSON.parse(err?.body).message);

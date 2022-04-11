@@ -77,7 +77,8 @@ const Text = ({ text }) => {
    });
 };
 
-const renderBlock = (block) => {
+const renderBlock = ({ block, params }) => {
+   const { webflow } = params;
    const { type, id } = block;
    const value = block[type];
    const color = value.color !== "default" ? value.color : "";
@@ -152,8 +153,20 @@ const renderBlock = (block) => {
             value.type === "external" ? value.external.url : value.file.url;
          const caption = value.caption ? value.caption[0]?.plain_text : "";
          return (
-            <figure>
-               <img src={src} alt={caption} />
+            <figure
+               className={
+                  webflow
+                     ? "w-richtext-align-center w-richtext-figure-type-image"
+                     : undefined
+               }
+            >
+               <div>
+                  <img
+                     src={src}
+                     alt={caption}
+                     loading={webflow ? "lazy" : undefined}
+                  />
+               </div>
                {caption && <figcaption>{caption}</figcaption>}
             </figure>
          );
@@ -244,12 +257,12 @@ const renderBlock = (block) => {
    }
 };
 
-const app = ({ blocks }) => {
+const app = ({ blocks, params }) => {
    // Return html with converted blocks
    return (
       <article>
          {blocks.map((block) => (
-            <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+            <Fragment key={block.id}>{renderBlock({ block, params })}</Fragment>
          ))}
       </article>
    );
