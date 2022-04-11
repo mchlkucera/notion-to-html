@@ -151,10 +151,18 @@ const renderBlock = ({ block, params }) => {
          const src =
             value.type === "external" ? value.external.url : value.file.url;
          const caption = value.caption ? value.caption[0]?.plain_text : "";
+
+         // Makes image full width
+         // - if "webflow" == true and caption is "fullwidth"
+         // -> caption will be hidden + image will be 100% width
+         const fullWidth = webflow && caption == "fullwidth";
+
          return (
             <figure
                className={
-                  webflow
+                  fullWidth
+                     ? "w-richtext-align-fullwidth w-richtext-figure-type-image"
+                     : webflow
                      ? "w-richtext-align-center w-richtext-figure-type-image"
                      : undefined
                }
@@ -166,7 +174,7 @@ const renderBlock = ({ block, params }) => {
                      loading={webflow ? "lazy" : undefined}
                   />
                </div>
-               {caption && (
+               {caption && !fullWidth && (
                   <figcaption>
                      <Text text={value.caption} />
                   </figcaption>
