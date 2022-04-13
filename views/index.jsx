@@ -50,9 +50,9 @@ const Text = ({ text }) => {
             : "",
       };
       const mergedStyles = {
-         ...codeStyles,
-         ...annotationStyles,
          color: color !== "default" ? textColors[color] : "",
+         ...annotationStyles,
+         ...codeStyles,
       };
 
       // Replace newlines with <br />
@@ -80,41 +80,49 @@ const Text = ({ text }) => {
    });
 };
 
+// Return background: bgColor or color: textColor
+const getColorOrBg = (color) => {
+   const hasBackground = color.includes("background");
+   if (hasBackground)
+      return { backgroundColor: backgroundColors[color.split("_")[0]] };
+   return color !== "default" ? { color: textColors[color] } : {};
+};
+
 const renderBlock = ({ block, params }) => {
    const { webflow } = params;
    const { type, id } = block;
    const value = block[type];
-   const color = value.color !== "default" ? textColors[value.color] : "";
+   const colorOrBg = value.color && getColorOrBg(value.color);
 
    switch (type) {
       case "paragraph":
          return (
-            <p style={{ color }}>
+            <p style={{ ...colorOrBg, padding: webflow ? "3px 2px" : "" }}>
                <Text text={value.rich_text} />
             </p>
          );
       case "heading_1":
          return (
-            <h1 style={{ color }}>
+            <h1 style={colorOrBg}>
                <Text text={value.rich_text} />
             </h1>
          );
       case "heading_2":
          return (
-            <h2 style={{ color }}>
+            <h2 style={colorOrBg}>
                <Text text={value.rich_text} />
             </h2>
          );
       case "heading_3":
          return (
-            <h3 style={{ color }}>
+            <h3 style={colorOrBg}>
                <Text text={value.rich_text} />
             </h3>
          );
       case "bulleted_list_item":
       case "numbered_list_item":
          return (
-            <li style={{ color }}>
+            <li style={colorOrBg}>
                <Text text={value.rich_text} />
                {value.children && (
                   <ul style={styles.ulCircle}>
@@ -129,7 +137,7 @@ const renderBlock = ({ block, params }) => {
          );
       case "to_do":
          return (
-            <div style={{ color }}>
+            <div style={colorOrBg}>
                <label htmlFor={id}>
                   <input
                      type="checkbox"
@@ -142,7 +150,7 @@ const renderBlock = ({ block, params }) => {
          );
       case "toggle":
          return (
-            <details style={{ color }}>
+            <details style={colorOrBg}>
                <summary>
                   <Text text={value.rich_text} />
                </summary>
@@ -154,7 +162,7 @@ const renderBlock = ({ block, params }) => {
             </details>
          );
       case "child_page":
-         return <p style={{ color }}>{value.title}</p>;
+         return <p style={colorOrBg}>{value.title}</p>;
       case "image":
          const src =
             value.type === "external" ? value.external.url : value.file.url;
@@ -197,7 +205,7 @@ const renderBlock = ({ block, params }) => {
          );
       case "code":
          return (
-            <div style={{ color, margin: "20px 0" }}>
+            <div style={{ ...colorOrBg, margin: "20px 0" }}>
                <pre
                   style={{
                      padding: "2px 4px",
@@ -242,20 +250,24 @@ const renderBlock = ({ block, params }) => {
          const imgSrc =
             icon.type === "external" ? icon.external.url : icon.file?.url;
 
-         // Set up the callout styles
-         const hasBackground = value.color.includes("background");
+         // Callout styles
          const calloutStyle = {
             padding: "16px 16px 16px 12px",
             display: "flex",
             borderRadius: "3px",
             margin: "4px 0",
          };
-         const style = hasBackground
-            ? { background: backgroundColors[value.color.split("_")[0]] }
-            : { color, border: `1px solid ${textColors[color]}` };
+
+         // If !background, add a border
+         const border = !value.color.includes("background")
+            ? `1px solid ${textColors[colorOrBg.color]}`
+            : undefined;
 
          return (
-            <div className="callout" style={{ ...style, ...calloutStyle }}>
+            <div
+               className="callout"
+               style={{ border, ...colorOrBg, ...calloutStyle }}
+            >
                <div
                   style={{ width: "24px", height: "24px", borderRadius: "3px" }}
                >
