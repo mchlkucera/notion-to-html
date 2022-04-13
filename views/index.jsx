@@ -112,7 +112,9 @@ const renderBlock = ({ block, params }) => {
                {value.children && (
                   <ul style={styles.ulCircle}>
                      {value.children?.map((block) => (
-                        <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                        <Fragment key={block.id}>
+                           {renderBlock({ block, params })}
+                        </Fragment>
                      ))}
                   </ul>
                )}
@@ -138,7 +140,9 @@ const renderBlock = ({ block, params }) => {
                   <Text text={value.rich_text} />
                </summary>
                {value.children?.map((block) => (
-                  <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                  <Fragment key={block.id}>
+                     {renderBlock({ block, params })}
+                  </Fragment>
                ))}
             </details>
          );
@@ -264,7 +268,9 @@ const renderBlock = ({ block, params }) => {
                <div style={{ marginLeft: "8px" }}>
                   <Text text={value.rich_text} />
                   {value.children?.map((block) => (
-                     <Fragment key={block.id}>{renderBlock(block)}</Fragment>
+                     <Fragment key={block.id}>
+                        {renderBlock({ block, params })}
+                     </Fragment>
                   ))}
                </div>
             </div>
