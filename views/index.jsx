@@ -3,22 +3,28 @@ const { Fragment } = require("react");
 const styles = require("../styles/styles.js");
 
 const textColors = {
-   blue: "#3998DC",
-   purple: "#9B5AB7",
-   green: "#5DBE9F",
-   orange: "#E57F31",
-   pink: "#E04583",
-   red: "#E74C3C",
-   yellow: "#DFAB2D",
+   default: "rgb(55, 53, 47)",
+   gray: "rgb(120, 119, 116)",
+   brown: "rgb(159, 107, 83)",
+   orange: "rgb(217, 115, 13)",
+   yellow: "rgb(203, 145, 47)",
+   green: "rgb(68, 131, 97)",
+   blue: "rgb(51, 126, 169)",
+   purple: "rgb(144, 101, 176)",
+   pink: "rgb(193, 76, 138)",
+   red: "rgb(212, 76, 71)",
 };
 const backgroundColors = {
-   red: "#FDEBEC",
-   yellow: "#FBF3DB",
-   green: "#EDF3EC",
-   blue: "#E7F3F8",
-   purple: "#F6F3F9",
-   pink: "#FAF1F5",
-   gray: "#F1F1EF",
+   default: "rgb(241, 241, 239)",
+   gray: "rgb(241, 241, 239)",
+   brown: "rgb(244, 238, 238)",
+   orange: "rgb(251, 236, 221)",
+   yellow: "rgb(251, 243, 219)",
+   green: "rgb(237, 243, 236)",
+   blue: "rgb(231, 243, 248)",
+   purple: "rgba(244, 240, 247, 0.8)",
+   pink: "rgba(249, 238, 243, 0.8)",
+   red: "rgb(253, 235, 236)",
 };
 
 const Text = ({ text }) => {
