@@ -12,12 +12,13 @@ const textColors = {
    yellow: "#DFAB2D",
 };
 const backgroundColors = {
-   red: "#F9DCDA",
-   yellow: "#FDEBB9",
-   green: "#D6FAD8",
-   blue: "#D4EBFE",
-   purple: "#F3DAFF",
-   pink: "#F6D1ED",
+   red: "#FDEBEC",
+   yellow: "#FBF3DB",
+   green: "#EDF3EC",
+   blue: "#E7F3F8",
+   purple: "#F6F3F9",
+   pink: "#FAF1F5",
+   gray: "#F1F1EF",
 };
 
 const Text = ({ text }) => {
