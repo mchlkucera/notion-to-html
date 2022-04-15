@@ -27,6 +27,14 @@ const backgroundColors = {
    red: "rgb(253, 235, 236)",
 };
 
+// Return background: bgColor or color: textColor
+const getColorOrBg = (color) => {
+   const hasBackground = color.includes("background");
+   if (hasBackground)
+      return { backgroundColor: backgroundColors[color.split("_")[0]] };
+   return color !== "default" ? { color: textColors[color] } : {};
+};
+
 const Text = ({ text }) => {
    if (!text) {
       return null;
@@ -39,6 +47,7 @@ const Text = ({ text }) => {
          annotations: { bold, code, color, italic, strikethrough, underline },
          text,
       } = value;
+      const colorOrBg = color && getColorOrBg(color);
       const annotationStyles = {
          fontWeight: bold ? "bold" : "",
          fontStyle: italic ? "italic" : "",
@@ -48,10 +57,7 @@ const Text = ({ text }) => {
             ? "underline"
             : "",
       };
-      const mergedStyles = {
-         color: color !== "default" ? textColors[color] : "",
-         ...annotationStyles,
-      };
+      console.log(value);
 
       // Replace newlines with <br />
       // + double "\n" prevention
@@ -68,7 +74,7 @@ const Text = ({ text }) => {
 
       return (
          <span
-            style={mergedStyles}
+            style={{ ...colorOrBg, ...annotationStyles }}
             className={code ? "inline-code" : undefined}
          >
             {text.link ? (
@@ -79,14 +85,6 @@ const Text = ({ text }) => {
          </span>
       );
    });
-};
-
-// Return background: bgColor or color: textColor
-const getColorOrBg = (color) => {
-   const hasBackground = color.includes("background");
-   if (hasBackground)
-      return { backgroundColor: backgroundColors[color.split("_")[0]] };
-   return color !== "default" ? { color: textColors[color] } : {};
 };
 
 const renderBlock = ({ block, params }) => {
