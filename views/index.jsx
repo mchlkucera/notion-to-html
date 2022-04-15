@@ -1,7 +1,6 @@
 const { style } = require("jade/lib/runtime");
 const React = require("react");
 const { Fragment } = require("react");
-const styles = require("../styles/styles.js");
 
 const textColors = {
    default: "rgb(55, 53, 47)",
@@ -35,12 +34,11 @@ const Text = ({ text }) => {
       return "ㅤ";
    }
    return text.map((value) => {
-      // Add styles
+      // Add annotation styles
       const {
          annotations: { bold, code, color, italic, strikethrough, underline },
          text,
       } = value;
-      const codeStyles = code ? styles.code : {};
       const annotationStyles = {
          fontWeight: bold ? "bold" : "",
          fontStyle: italic ? "italic" : "",
@@ -53,7 +51,6 @@ const Text = ({ text }) => {
       const mergedStyles = {
          color: color !== "default" ? textColors[color] : "",
          ...annotationStyles,
-         ...codeStyles,
       };
 
       // Replace newlines with <br />
@@ -70,7 +67,10 @@ const Text = ({ text }) => {
            ));
 
       return (
-         <span style={mergedStyles} className={code ? "code" : undefined}>
+         <span
+            style={mergedStyles}
+            className={code ? "inline-code" : undefined}
+         >
             {text.link ? (
                <a href={text.link.url}>{textContent}</a>
             ) : (
@@ -90,7 +90,7 @@ const getColorOrBg = (color) => {
 };
 
 const renderBlock = ({ block, params }) => {
-   const { webflow } = params;
+   const webflow = params.webflow == "true";
    const { type, id } = block;
    const value = block[type];
    const colorOrBg = value.color && getColorOrBg(value.color);
@@ -126,7 +126,7 @@ const renderBlock = ({ block, params }) => {
             <li style={colorOrBg}>
                <Text text={value.rich_text} />
                {value.children && (
-                  <ul style={styles.ulCircle}>
+                  <ul className={webflow ? "ul-2nd-level" : undefined}>
                      {value.children?.map((block) => (
                         <Fragment key={block.id}>
                            {renderBlock({ block, params })}
@@ -152,19 +152,13 @@ const renderBlock = ({ block, params }) => {
       case "toggle":
          return (
             <details style={colorOrBg}>
-               <summary className="toggle-summary">
+               <summary className={webflow ? "toggle-summary" : undefined}>
                   {webflow ? (
                      <>
-                        <div
-                           className="toggle-triangle"
-                           style={styles.toggleTriangle}
-                        >
+                        <div className="toggle-triangle">
                            <span>▶</span>
                         </div>
-                        <div
-                           className="toggle-summary-content"
-                           style={styles.toggleSummaryContent}
-                        >
+                        <div className="toggle-summary-content">
                            <Text text={value.rich_text} />
                         </div>
                      </>
@@ -172,10 +166,7 @@ const renderBlock = ({ block, params }) => {
                      <Text text={value.rich_text} />
                   )}
                </summary>
-               <div
-                  className="details-content"
-                  style={webflow ? styles.detailsContent : {}}
-               >
+               <div className={webflow ? "details-content" : undefined}>
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
                         {renderBlock({ block, params })}
@@ -221,7 +212,7 @@ const renderBlock = ({ block, params }) => {
             </figure>
          );
       case "divider":
-         return <hr key={id} style={webflow ? styles.divider : {}} />;
+         return <hr key={id} className={webflow ? "divider" : undefined} />;
       case "quote":
          return (
             <blockquote key={id}>{value.rich_text[0].plain_text}</blockquote>
