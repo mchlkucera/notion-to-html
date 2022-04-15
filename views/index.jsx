@@ -47,7 +47,7 @@ const Text = ({ text }) => {
          annotations: { bold, code, color, italic, strikethrough, underline },
          text,
       } = value;
-      const colorOrBg = color && getColorOrBg(color);
+      const colorOrBg = getColorOrBg(color);
       const annotationStyles = {
          fontWeight: bold ? "bold" : "",
          fontStyle: italic ? "italic" : "",
