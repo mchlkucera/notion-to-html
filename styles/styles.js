@@ -15,10 +15,10 @@ const styles = {
       border: "none",
       borderBottom: "1px solid rgba(55, 53, 47, 0.16)",
    },
-   codeTriangle: {
+   toggleTriangle: {
       width: "26px",
       marginRight: "8px",
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
    },
