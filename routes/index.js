@@ -1,5 +1,9 @@
 const { getBlocks } = require("../lib/notion");
 const cloudinary = require("cloudinary").v2;
+const dotenv = require("dotenv");
+dotenv.config();
+const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } =
+   process.env;
 
 exports.index = async (req, res) => {
    try {
@@ -26,43 +30,41 @@ exports.index = async (req, res) => {
          return block;
       });
 
-      // replace urls
-      if (params.uploadImages == "true") {
-         const imageBlocks = blocks.filter(
-            (block) => block.type == "image" && block?.image.type == "file"
-         );
-         if (imageBlocks.length > 0) {
-            cloudinary.config({
-               cloud_name: "mchlkucera",
-               api_key: "986576625382223",
-               api_secret: "Wuc8WpisXkc17RVHbDFqcxK4deY",
-            });
-            const updatedImageBlocks = await Promise.all(
-               imageBlocks.map(async (block) => {
-                  const response = await cloudinary.uploader.upload(
-                     block.image.file.url,
-                     { folder: "notion-blog" },
-                     (error, result) => {
-                        console.log({
-                           message: "successfully uploaded",
-                           url: result.url,
-                        });
-                     }
-                  );
-                  block.image.file.url = response.url;
-                  return block;
-               })
-            );
-            const updatedBlocks = blocks.map((block) => {
-               if (block.type == "image" && block?.image.type == "file") {
-                  block.file = updatedImageBlocks.find(
-                     (x) => x.id === block.id
-                  ).file;
-               }
+      // Upload images
+      const imageBlocks = blocks.filter(
+         (block) => block.type == "image" && block?.image.type == "file"
+      );
+      if (params.uploadImages == "true" && imageBlocks.length > 0) {
+         cloudinary.config({
+            CLOUDINARY_CLOUD_NAME,
+            CLOUDINARY_API_KEY,
+            CLOUDINARY_API_SECRET,
+         });
+         const updatedImageBlocks = await Promise.all(
+            imageBlocks.map(async (block) => {
+               const response = await cloudinary.uploader.upload(
+                  block.image.file.url,
+                  { folder: "notion-blog" },
+                  (error, result) => {
+                     console.log({
+                        message: "successfully uploaded",
+                        url: result.url,
+                     });
+                  }
+               );
+               block.image.file.url = response.url;
                return block;
-            });
-            res.render("index", { blocks: updatedBlocks, params });
-         }
+            })
+         );
+         const updatedBlocks = blocks.map((block) => {
+            if (block.type == "image" && block?.image.type == "file") {
+               block.file = updatedImageBlocks.find(
+                  (x) => x.id === block.id
+               ).file;
+            }
+            return block;
+         });
+         res.render("index", { blocks: updatedBlocks, params });
       } else res.render("index", { blocks: blocksWithChildren, params });
    } catch (err) {
       console.log(err);
