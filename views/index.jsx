@@ -1,3 +1,4 @@
+const { style } = require("jade/lib/runtime");
 const React = require("react");
 const { Fragment } = require("react");
 const styles = require("../styles/styles.js");
@@ -152,13 +153,23 @@ const renderBlock = ({ block, params }) => {
          return (
             <details style={colorOrBg}>
                <summary>
+                  {webflow && (
+                     <div
+                        className="toggle-triangle"
+                        style={styles.toggleTriangle}
+                     >
+                        ▶
+                     </div>
+                  )}
                   <Text text={value.rich_text} />
                </summary>
-               {value.children?.map((block) => (
-                  <Fragment key={block.id}>
-                     {renderBlock({ block, params })}
-                  </Fragment>
-               ))}
+               <div className="details-content" style={styles.detailsContent}>
+                  {value.children?.map((block) => (
+                     <Fragment key={block.id}>
+                        {renderBlock({ block, params })}
+                     </Fragment>
+                  ))}
+               </div>
             </details>
          );
       case "child_page":
@@ -198,7 +209,7 @@ const renderBlock = ({ block, params }) => {
             </figure>
          );
       case "divider":
-         return <hr key={id} />;
+         return <hr key={id} style={webflow ? styles.divider : {}} />;
       case "quote":
          return (
             <blockquote key={id}>{value.rich_text[0].plain_text}</blockquote>

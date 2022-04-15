@@ -11,6 +11,20 @@ const styles = {
    ulCircle: {
       listStyleType: "circle",
    },
+   divider: {
+      border: "none",
+      borderBottom: "1px solid rgba(55, 53, 47, 0.16)",
+   },
+   codeTriangle: {
+      width: "26px",
+      marginRight: "8px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+   },
+   detailsContent: {
+      marginLeft: "34px",
+   },
 };
 
 module.exports = styles;
