@@ -25,6 +25,9 @@ const styles = {
    detailsContent: {
       marginLeft: "34px",
    },
+   toggleSummaryContent: {
+      padding: "3px 2px",
+   },
 };
 
 module.exports = styles;

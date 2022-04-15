@@ -152,18 +152,30 @@ const renderBlock = ({ block, params }) => {
       case "toggle":
          return (
             <details style={colorOrBg}>
-               <summary>
-                  {webflow && (
-                     <div
-                        className="toggle-triangle"
-                        style={styles.toggleTriangle}
-                     >
-                        ▶
-                     </div>
+               <summary className="toggle-summary">
+                  {webflow ? (
+                     <>
+                        <div
+                           className="toggle-triangle"
+                           style={styles.toggleTriangle}
+                        >
+                           <span>▶</span>
+                        </div>
+                        <div
+                           className="toggle-summary-content"
+                           style={styles.toggleSummaryContent}
+                        >
+                           <Text text={value.rich_text} />
+                        </div>
+                     </>
+                  ) : (
+                     <Text text={value.rich_text} />
                   )}
-                  <Text text={value.rich_text} />
                </summary>
-               <div className="details-content" style={styles.detailsContent}>
+               <div
+                  className="details-content"
+                  style={webflow ? styles.detailsContent : {}}
+               >
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
                         {renderBlock({ block, params })}
