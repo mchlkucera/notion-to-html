@@ -78,7 +78,9 @@ const Text = ({ text }) => {
             className={code ? "inline-code" : undefined}
          >
             {text.link ? (
-               <a href={text.link.url}>{textContent}</a>
+               <a href={text.link.url} target="_blank">
+                  {textContent}
+               </a>
             ) : (
                textContent
             )}
