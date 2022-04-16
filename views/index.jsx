@@ -57,7 +57,6 @@ const Text = ({ text }) => {
             ? "underline"
             : "",
       };
-      console.log(value);
 
       // Replace newlines with <br />
       // + double "\n" prevention
@@ -121,6 +120,20 @@ const renderBlock = ({ block, params }) => {
             </h3>
          );
       case "bulleted_list_item":
+         return (
+            <li style={colorOrBg}>
+               <Text text={value.rich_text} />
+               {value.children && (
+                  <ul className={webflow ? "ul-2nd-level" : undefined}>
+                     {value.children?.map((block) => (
+                        <Fragment key={block.id}>
+                           {renderBlock({ block, params })}
+                        </Fragment>
+                     ))}
+                  </ul>
+               )}
+            </li>
+         );
       case "numbered_list_item":
          return (
             <li style={colorOrBg}>
