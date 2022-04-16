@@ -28,22 +28,70 @@ exports.index = async (req, res) => {
          return block;
       });
 
-      // Upload images
+      // UPLOAD IMAGES
+      // Find image blocks
       const imageBlocks = blocks.filter(
          (block) => block.type == "image" && block?.image.type == "file"
       );
+      // Check settings && are there image blocks?
       if (params.uploadImages == "true" && imageBlocks.length > 0) {
+         // Set up cloudinary
          cloudinary.config({
             cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
             api_key: process.env.CLOUDINARY_API_KEY,
             api_secret: process.env.CLOUDINARY_API_SECRET,
          });
-         const updatedImageBlocks = await Promise.all(
-            imageBlocks.map(async (block) => {
+
+         // See if the images were already uploaded
+         const rawFoundImages = await Promise.resolve(
+            cloudinary.api.resources(
+               {
+                  type: "upload",
+                  prefix: `notion-blog/${pageId}`,
+               },
+               function (error, result) {
+                  if (error) console.log(error);
+                  if (result.resources.length > 0)
+                     console.log(`> FOUND ${result.resources.length} IMAGES`);
+                  result.resources.map(({ public_id }) =>
+                     console.log({ id: public_id.split("/")[2] })
+                  );
+               }
+            )
+         );
+         const foundImages = rawFoundImages.resources.map(
+            ({ url, public_id }) => ({
+               url,
+               imageId: public_id.split("/")[2],
+            })
+         );
+
+         const alreadyUploadedBlocks = [],
+            toBeUploadedBlocks = [];
+         // Checks which images are already uploaded
+         // New images are stored in "toBeUploadedBlocks"
+         imageBlocks.map((block) => {
+            const imageId = block.image.file.url.split("/")[4];
+            const result = foundImages.find(
+               (foundImage) => foundImage.imageId == imageId
+            );
+            if (result) {
+               block.image.file.url = result.url;
+               alreadyUploadedBlocks.push(block);
+            } else toBeUploadedBlocks.push(block);
+         });
+
+         // Image upload
+         if (toBeUploadedBlocks.length > 0)
+            console.log(`> UPLOADING ${toBeUploadedBlocks.length} IMAGES`);
+         const uploadedBlocks = await Promise.all(
+            toBeUploadedBlocks.map(async (block) => {
+               const public_id = block.image.file.url.split("/")[4];
                const response = await cloudinary.uploader.upload(
                   block.image.file.url,
-                  { folder: "notion-blog" },
+                  { folder: `notion-blog/${pageId}`, public_id },
                   (error, result) => {
+                     if (error) console.log(error);
                      console.log({
                         message: "successfully uploaded",
                         url: result.url,
@@ -54,11 +102,13 @@ exports.index = async (req, res) => {
                return block;
             })
          );
+
+         // Merges all blocks into one array
          const updatedBlocks = blocks.map((block) => {
             if (block.type == "image" && block?.image.type == "file") {
-               block.file = updatedImageBlocks.find(
-                  (x) => x.id === block.id
-               ).file;
+               block.file =
+                  alreadyUploadedBlocks.find((x) => x.id === block.id)?.file ||
+                  uploadedBlocks.find((x) => x.id === block.id)?.file;
             }
             return block;
          });
