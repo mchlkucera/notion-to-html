@@ -1,7 +1,12 @@
+## Usage
+
+1. Add `NOTION_TOKEN` and `NOTION_DATABASE_ID` in `.env` file
+2. Run `npm run start`
+3. Access the app at `localhost:3000/[pageId]`
+
 ## Current limitations
 
 -  Child blocks are only supported on **toggle** and **list** and **to_do** blocks. Child blocks only available one level deep.
--  Ordered list will be converted to unordered list
 
 ## Supported blocks
 
@@ -10,7 +15,7 @@
 -  heading_2
 -  heading_3
 -  bulleted_list_item
--  numbered_list_item (is converted to unordered list)
+-  numbered_list_item (by default rendered as bullet list item, see optional params for setup)
 -  to_do
 -  toggle
 -  child_page (link)
@@ -22,18 +27,44 @@
 -  callout
 -  video
 
+## Optional params
+
+Each param expects boolean value
+
+-  `forWebflow`: added classes and optimization for Webflow Richtext
+-  `uploadImages`: uploads each image to Cloudinary
+-  `pseudoNumberedList`: workaround for numbered lists
+
+### Webflow optimization
+
+-  Images:
+   -  default Webflow styles (class `w-richtext-figure-type-image`)
+   -  adds lazy loading
+   -  Makes images fullwidth by default. Insert `center` in the Notion image caption to make image centered (class `w-richtext-align-fullwidth`) (the API will not insert the caption)
+-  Adds padding on paragraphs
+-  Added classes on: second level <ul>, toggle, divider, video blocks
+
+### Image upload to Cloudinary
+
+Fetched URLs of images uploaded to default expire after one day. In order to keep the image URLs pernamently, it's required to upload all images someplace else. I choose Cloudinary for this.
+Each time you have the `uploadImages` parameter set to `true`, the API will first look if the image were not already uploaded before. If it was already uploaded, it will use the old URL.
+
+#### Image upload setup
+
+1. Create an account @ http://cloudinary.com/
+2. Choose configure your SDK
+3. Add `CLOUDINARY_CLOUD_NAME` (cloud_name), `CLOUDINARY_API_KEY` (api_key), `CLOUDINARY_API_SECRET` (api_secret) to your environment variables
+4. Add `uploadImages=true` as a query param with each request
+
+## Numbered lists
+
+By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will put the row instead of in <li> in a <div class="pseudo-numbered-list"> with a <span className="list-number"> containing the list number and <span className="list-content"> containing the list content.
+
 ## Used libraries
 
 -  [Notion blog to NextJS](https://github.com/samuelkraft/notion-blog-nextjs)
--  [Notion Client](https://github.com/samuelkraft/notion-blog-nextjs)
+-  [Notion JS Client](https://github.com/makenotion/notion-sdk-js)
 
-## How to start
+### TODO
 
-1. add NOTION_TOKEN and NOTION_DATABASE_ID into `.env` file
-2. run `npm run start`
-3. access the app at `localhost:3000/[pageId]`
-
-## Optional header params
-
--  `forWebflow`: adds classes and optimization for Webflow Richtext (expects boolean values)
-   -  imgs: lazy loading, added classes
+-  Add webflow padding 3px 2px on paragraphs
