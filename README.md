@@ -42,7 +42,7 @@ Each param expects boolean value
    -  adds lazy loading
    -  Makes images fullwidth by default. Insert `center` in the Notion image caption to make image centered (class `w-richtext-align-fullwidth`) (the API will not insert the caption)
 -  Adds padding on paragraphs
--  Added classes on: second level <ul>, toggle, divider, video blocks
+-  Added classes on: second level `<ul>`, toggles, dividers, video blocks
 
 ### Image upload to Cloudinary
 
@@ -58,13 +58,16 @@ Each time you have the `uploadImages` parameter set to `true`, the API will firs
 
 ## Numbered lists
 
-By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will put the row instead of in <li> in a <div class="pseudo-numbered-list"> with a <span className="list-number"> containing the list number and <span className="list-content"> containing the list content.
+By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will replace the default <li> for
+
+```html
+<div class="pseudo-numbered-list">
+   <span className="list-number">1.</span>
+   <span className="list-content">List content</span>
+</div>
+```
 
 ## Used libraries
 
 -  [Notion blog to NextJS](https://github.com/samuelkraft/notion-blog-nextjs)
 -  [Notion JS Client](https://github.com/makenotion/notion-sdk-js)
-
-### TODO
-
--  Add webflow padding 3px 2px on paragraphs
