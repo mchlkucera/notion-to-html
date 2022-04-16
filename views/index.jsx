@@ -1,4 +1,3 @@
-const { style } = require("jade/lib/runtime");
 const React = require("react");
 const { Fragment } = require("react");
 
@@ -94,7 +93,7 @@ const renderBlock = ({ block, params }) => {
    const pseudoNumberedList = params.pseudoNumberedList == "true";
    const { type, id } = block;
    const value = block[type];
-   const colorOrBg = value.color && getColorOrBg(value.color);
+   const colorOrBg = getColorOrBg(value.color);
 
    // Reset orderedListCount if this block is not numbered_list_item
    if (orderedListCount > 1 && type !== "numbered_list_item")
@@ -142,7 +141,7 @@ const renderBlock = ({ block, params }) => {
          );
       case "numbered_list_item":
          orderedListCount++;
-         // render ordered list alternative
+         // render pseudo ordered list
          if (pseudoNumberedList)
             return (
                <div className="pseudo-numbered-list" style={colorOrBg}>
@@ -223,9 +222,8 @@ const renderBlock = ({ block, params }) => {
             value.type === "external" ? value.external.url : value.file.url;
          const plainCaption = value.caption ? value.caption[0]?.plain_text : "";
 
-         // Makes image full width
-         // - if "webflow" == true and caption is "fullwidth"
-         // -> caption will be hidden + image will be 100% width
+         // Makes image full width by default
+         // if caption is "center", image will be centered and caption hidden
          const center = webflow && plainCaption == "center";
 
          return (
