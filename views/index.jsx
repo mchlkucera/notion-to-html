@@ -103,7 +103,7 @@ const renderBlock = ({ block, params }) => {
    switch (type) {
       case "paragraph":
          return (
-            <p style={{ ...colorOrBg, padding: webflow ? "3px 2px" : "" }}>
+            <p style={colorOrBg}>
                <Text text={value.rich_text} />
             </p>
          );
