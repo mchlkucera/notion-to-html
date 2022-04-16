@@ -88,11 +88,17 @@ const Text = ({ text }) => {
    });
 };
 
+let orderedListCount = 1;
 const renderBlock = ({ block, params }) => {
    const webflow = params.webflow == "true";
+   const pseudoNumberedList = params.pseudoNumberedList == "true";
    const { type, id } = block;
    const value = block[type];
    const colorOrBg = value.color && getColorOrBg(value.color);
+
+   // Reset orderedListCount if this block is not numbered_list_item
+   if (orderedListCount > 1 && type !== "numbered_list_item")
+      orderedListCount = 1;
 
    switch (type) {
       case "paragraph":
@@ -135,20 +141,42 @@ const renderBlock = ({ block, params }) => {
             </li>
          );
       case "numbered_list_item":
-         return (
-            <li style={colorOrBg}>
-               <Text text={value.rich_text} />
-               {value.children && (
-                  <ul className={webflow ? "ul-2nd-level" : undefined}>
-                     {value.children?.map((block) => (
-                        <Fragment key={block.id}>
-                           {renderBlock({ block, params })}
-                        </Fragment>
-                     ))}
-                  </ul>
-               )}
-            </li>
-         );
+         orderedListCount++;
+         // render ordered list alternative
+         if (pseudoNumberedList)
+            return (
+               <div className="pseudo-numbered-list" style={colorOrBg}>
+                  <span className="list-number">{orderedListCount - 1}.</span>
+                  <span className="list-content">
+                     <Text text={value.rich_text} />
+                     {value.children && (
+                        <ul className={webflow ? "ul-2nd-level" : undefined}>
+                           {value.children?.map((block) => (
+                              <Fragment key={block.id}>
+                                 {renderBlock({ block, params })}
+                              </Fragment>
+                           ))}
+                        </ul>
+                     )}
+                  </span>
+               </div>
+            );
+         // render default unordered list
+         else
+            return (
+               <li style={colorOrBg}>
+                  <Text text={value.rich_text} />
+                  {value.children && (
+                     <ul className={webflow ? "ul-2nd-level" : undefined}>
+                        {value.children?.map((block) => (
+                           <Fragment key={block.id}>
+                              {renderBlock({ block, params })}
+                           </Fragment>
+                        ))}
+                     </ul>
+                  )}
+               </li>
+            );
       case "to_do":
          return (
             <div style={colorOrBg}>
@@ -296,7 +324,11 @@ const renderBlock = ({ block, params }) => {
                style={{ border, ...colorOrBg, ...calloutStyle }}
             >
                <div
-                  style={{ width: "24px", height: "24px", borderRadius: "3px" }}
+                  style={{
+                     width: "24px",
+                     height: "24px",
+                     borderRadius: "3px",
+                  }}
                >
                   {icon.type !== "emoji" && (
                      <img
