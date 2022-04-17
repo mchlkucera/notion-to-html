@@ -309,9 +309,11 @@ const renderBlock = ({ block, params, level = 0 }) => {
                <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
                </pre>
-               <div className="code-caption">
-                  <Text text={value.caption} />
-               </div>
+               {value.caption[0]?.plain_text && (
+                  <div className="code-caption">
+                     <Text text={value.caption} />
+                  </div>
+               )}
             </div>
          );
       case "file":
