@@ -79,6 +79,8 @@ Inline styles are used for setting text colors, backgrounds and annotations. The
 
 ### Webflow optimization
 
+Use the `forWebflow` parameter to add Webflow styling optimization classes.
+
 -  Images:
    -  default Webflow styles (class `w-richtext-figure-type-image`)
    -  adds lazy loading
@@ -104,13 +106,13 @@ Inline styles are used for setting text colors, backgrounds and annotations. The
 ### Image upload to Cloudinary
 
 Fetched URLs of images uploaded to default expire after one day. In order to keep the image URLs pernamently, it's required to upload all images someplace else. I choose Cloudinary for this.
-Each time you have the `uploadImages` parameter set to `true`, the API will first look if the image were not already uploaded before. If it was already uploaded, it will use the old URL.
+Each time you have the `uploadImages` parameter set to `true`, the API will first look if the image were not already uploaded before. If it finds, it uses the old URL, if not, it uploads a new image.
 
 #### Image upload setup
 
-1. Create an account @ http://cloudinary.com/
+1. Create a http://cloudinary.com/ account
 2. Choose configure your SDK
-3. Add `CLOUDINARY_CLOUD_NAME` (cloud_name), `CLOUDINARY_API_KEY` (api_key), `CLOUDINARY_API_SECRET` (api_secret) to your environment variables
+3. To your environment variables, add `CLOUDINARY_CLOUD_NAME` (cloud_name), `CLOUDINARY_API_KEY` (api_key), `CLOUDINARY_API_SECRET` (api_secret)
 4. Add `uploadImages=true` as a query param with each request
 
 ## Numbered lists
