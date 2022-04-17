@@ -316,7 +316,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                      fs-copyclip-message="Copied!"
                      fs-copyclip-duration="1000"
                   >
-                     Copy code
+                     Copy
                   </a>
                </pre>
                {value.caption[0]?.plain_text && (
