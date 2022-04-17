@@ -311,6 +311,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                   <a
                      href="#"
                      className="copy-button"
+                     fs-copyclip-element="click"
                      fs-copyclip-text={value.rich_text[0].plain_text}
                      fs-copyclip-message="Copied!"
                   >
