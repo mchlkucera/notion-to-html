@@ -258,24 +258,11 @@ const renderBlock = ({ block, params }) => {
          );
       case "code":
          return (
-            <div style={{ ...colorOrBg, margin: "20px 0" }}>
-               <pre
-                  style={{
-                     padding: "2px 4px",
-                     margin: "4px 0",
-                     tabSize: "2",
-                     overflow: "auto",
-                     borderRadius: "8px",
-                     boxShadow: "0 0 8px rgba(0,4px,0,0.2)",
-                  }}
-               >
+            <div style={colorOrBg} className={webflow ? "pre-container" : ""}>
+               <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
                </pre>
-               <div
-                  style={{
-                     padding: "6px 2px 6px",
-                  }}
-               >
+               <div className="code-caption">
                   <Text text={value.caption} />
                </div>
             </div>
@@ -325,21 +312,22 @@ const renderBlock = ({ block, params }) => {
                   style={{
                      width: "24px",
                      height: "24px",
-                     borderRadius: "3px",
                   }}
                >
-                  {icon.type !== "emoji" && (
+                  {icon.type !== "emoji" ? (
                      <img
                         src={imgSrc}
                         alt=""
                         style={{
-                           width: "22px",
-                           height: "22px",
+                           width: "24px",
+                           height: "24px",
+                           borderRadius: "3px",
                            objectFit: "cover",
                         }}
                      />
+                  ) : (
+                     icon.emoji
                   )}
-                  {icon.emoji}
                </div>
                <div style={{ marginLeft: "8px" }}>
                   <Text text={value.rich_text} />
