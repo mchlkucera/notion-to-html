@@ -308,6 +308,14 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <div style={colorOrBg} className={webflow ? "pre-container" : ""}>
                <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
+                  <a
+                     href="#"
+                     className="copy-button"
+                     fs-copyclip-text={value.rich_text[0].plain_text}
+                     fs-copyclip-message="Copied!"
+                  >
+                     Copy
+                  </a>
                </pre>
                {value.caption[0]?.plain_text && (
                   <div className="code-caption">
