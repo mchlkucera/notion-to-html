@@ -26,7 +26,7 @@ const backgroundColors = {
    red: "rgb(253, 235, 236)",
 };
 
-// Return background: bgColor or color: textColor
+// Return `{background: bgColor}` or `{color: textColor}`
 const getColorOrBg = (color) => {
    const hasBackground = color.includes("background");
    if (hasBackground)
@@ -34,6 +34,7 @@ const getColorOrBg = (color) => {
    return color !== "default" ? { color: textColors[color] } : {};
 };
 
+// Renders strings
 const Text = ({ text }) => {
    if (!text) {
       return null;
@@ -70,18 +71,26 @@ const Text = ({ text }) => {
               </Fragment>
            ));
 
+      // Modify in-page link
+      // For in-page links keep only the part after the pound sign
+      const isInlineLink = text.link && text.link.url[0] == "/";
+      const link = !text.link
+         ? undefined
+         : isInlineLink
+         ? "#" + text.link.url.split("#")[1] // modify inline link
+         : text.link.url; // insert regular link
+
+      const linkProps = text.link && {
+         href: link,
+         target: isInlineLink ? undefined : "_blank",
+      };
+
       return (
          <span
             style={{ ...colorOrBg, ...annotationStyles }}
             className={code ? "inline-code" : undefined}
          >
-            {text.link ? (
-               <a href={text.link.url} target="_blank">
-                  {textContent}
-               </a>
-            ) : (
-               textContent
-            )}
+            {text.link ? <a {...linkProps}>{textContent}</a> : textContent}
          </span>
       );
    });
@@ -89,9 +98,11 @@ const Text = ({ text }) => {
 
 let orderedListCount = 1;
 const renderBlock = ({ block, params }) => {
+   // Param settings
    const webflow = params.webflow == "true";
    const pseudoNumberedList = params.pseudoNumberedList == "true";
    const headingIds = params.headingIds == "true";
+
    const { type, id } = block;
    const value = block[type];
    const colorOrBg = value.color && getColorOrBg(value.color);
@@ -99,6 +110,12 @@ const renderBlock = ({ block, params }) => {
    // Reset orderedListCount if this block is not numbered_list_item
    if (orderedListCount > 1 && type !== "numbered_list_item")
       orderedListCount = 1;
+
+   // Handle in-page links
+   const headingProps = {
+      style: colorOrBg,
+      id: headingIds ? id.replace(/-/g, "") : undefined,
+   };
 
    switch (type) {
       case "paragraph":
@@ -109,19 +126,19 @@ const renderBlock = ({ block, params }) => {
          );
       case "heading_1":
          return (
-            <h1 style={colorOrBg} id={headingIds ? id : ""}>
+            <h1 {...headingProps}>
                <Text text={value.rich_text} />
             </h1>
          );
       case "heading_2":
          return (
-            <h2 style={colorOrBg} id={headingIds ? id : ""}>
+            <h2 {...headingProps}>
                <Text text={value.rich_text} />
             </h2>
          );
       case "heading_3":
          return (
-            <h3 style={colorOrBg} id={headingIds ? id : ""}>
+            <h3 {...headingProps}>
                <Text text={value.rich_text} />
             </h3>
          );
