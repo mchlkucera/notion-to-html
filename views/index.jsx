@@ -164,9 +164,11 @@ const renderBlock = ({ block, params }) => {
          // render pseudo ordered list
          if (pseudoNumberedList)
             return (
-               <div className="pseudo-numbered-list" style={colorOrBg}>
-                  <span className="list-number">{orderedListCount - 1}.</span>
-                  <span className="list-content">
+               <div className="numbered-list" style={colorOrBg}>
+                  <span className="list-item-number">
+                     {orderedListCount - 1}.
+                  </span>
+                  <span className="list-item-content">
                      <Text text={value.rich_text} />
                      {value.children && (
                         <ul className={webflow ? "ul-2nd-level" : undefined}>

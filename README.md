@@ -134,9 +134,9 @@ Each time you have the `uploadImages` parameter set to `true`, the API will firs
 By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will replace the default `<li>` for
 
 ```html
-<div class="pseudo-numbered-list">
-   <span className="list-number">1.</span>
-   <span className="list-content">List content</span>
+<div class="numbered-list">
+   <span className="list-item-number">1.</span>
+   <span className="list-item-content">List content</span>
 </div>
 ```
 
