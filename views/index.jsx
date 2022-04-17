@@ -276,7 +276,9 @@ const renderBlock = ({ block, params }) => {
          return <hr key={id} className={webflow ? "divider" : undefined} />;
       case "quote":
          return (
-            <blockquote key={id}>{value.rich_text[0].plain_text}</blockquote>
+            <blockquote key={id} style={colorOrBg}>
+               {value.rich_text[0].plain_text}
+            </blockquote>
          );
       case "code":
          return (
