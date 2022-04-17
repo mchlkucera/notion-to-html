@@ -38,6 +38,7 @@
 -  synced_block
 -  table
 -  table_row
+-  child_database
 
 ## Callout styling
 

@@ -105,17 +105,19 @@ const renderBlock = ({ block, params }) => {
 
    const { type, id } = block;
    const value = block[type];
-   const colorOrBg = value.color && getColorOrBg(value.color);
+   const colorOrBg = value?.color && getColorOrBg(value.color);
 
    // Reset orderedListCount if this block is not numbered_list_item
    if (orderedListCount > 1 && type !== "numbered_list_item")
       orderedListCount = 1;
 
-   // Handle in-page links
-   const headingProps = {
-      style: colorOrBg,
-      id: headingIds ? id.replace(/-/g, "") : undefined,
-   };
+   // Handle in-page heading links
+   const headingProps = type.includes("heading")
+      ? {
+           style: colorOrBg,
+           id: headingIds ? id.replace(/-/g, "") : undefined,
+        }
+      : undefined;
 
    switch (type) {
       case "paragraph":
