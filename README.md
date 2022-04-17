@@ -29,7 +29,15 @@
 
 ### Unsupported blocks
 
+-  bookmark
+-  pdf
 -  table_of_contents
+-  breadcrumb
+-  embed
+-  link_preview
+-  synced_block
+-  table
+-  table_row
 
 ## Callout styling
 
