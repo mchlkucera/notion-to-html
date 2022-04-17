@@ -27,13 +27,55 @@
 -  callout
 -  video
 
-## Optional params
+## Callout styling
 
-Each param expects boolean value
+Inline styles are used for setting text colors, backgrounds and annotations. The only place with heavy use of inline styles is the `callout` block.
+
+```jsx
+<div
+   className="callout"
+   style={{
+      padding: "16px 16px 16px 12px",
+      display: "flex",
+      borderRadius: "3px",
+      margin: "4px 0",
+      /* + border/color */
+   }}
+>
+   {/* Callout icon container */}
+   <div
+      style={{
+         width: "24px",
+         height: "24px",
+         borderRadius: "3px",
+      }}
+   >
+      {/* Callout img instead of emoji handling */}
+      {icon.type !== "emoji" ? (
+         <img
+            src={imgSrc}
+            alt=""
+            style={{
+               width: "22px",
+               height: "22px",
+               objectFit: "cover",
+            }}
+         />
+      ) : (
+         icon.emoji
+      )}
+   </div>
+   <div style={{ marginLeft: "8px" }}>Callout content</div>
+</div>
+```
+
+## Optional params
 
 -  `forWebflow`: added classes and optimization for Webflow Richtext
 -  `uploadImages`: uploads each image to Cloudinary
 -  `pseudoNumberedList`: workaround for numbered lists
+
+(Each param expects boolean value and is false by default)
 
 ### Webflow optimization
 
@@ -41,8 +83,23 @@ Each param expects boolean value
    -  default Webflow styles (class `w-richtext-figure-type-image`)
    -  adds lazy loading
    -  Makes images fullwidth by default. Insert `center` in the Notion image caption to make image centered (class `w-richtext-align-fullwidth`) (the API will not insert the caption)
--  Adds padding on paragraphs
--  Added classes on: second level `<ul>`, toggles, dividers, video blocks
+-  Added classes on
+   -  second level `<ul>` (class `ul-2nd-level`)
+   -  code (class `pre-container`)
+   -  toggles
+   ```html
+   <details>
+      <summary class="toggle-summary">
+         <div className="toggle-triangle">
+            <span>▶</span>
+         </div>
+         <div className="toggle-summary-content">Toggle summary</div>
+      </summary>
+      <div className="details-content">Hidden toggle content</div>
+   </details>
+   ```
+   -  dividers (class `divider`)
+   -  videos
 
 ### Image upload to Cloudinary
 
@@ -58,7 +115,7 @@ Each time you have the `uploadImages` parameter set to `true`, the API will firs
 
 ## Numbered lists
 
-By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will replace the default <li> for
+By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will replace the default `<li>` for
 
 ```html
 <div class="pseudo-numbered-list">
