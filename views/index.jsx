@@ -91,9 +91,10 @@ let orderedListCount = 1;
 const renderBlock = ({ block, params }) => {
    const webflow = params.webflow == "true";
    const pseudoNumberedList = params.pseudoNumberedList == "true";
+   const headingIds = params.headingIds == "true";
    const { type, id } = block;
    const value = block[type];
-   const colorOrBg = getColorOrBg(value.color);
+   const colorOrBg = value.color && getColorOrBg(value.color);
 
    // Reset orderedListCount if this block is not numbered_list_item
    if (orderedListCount > 1 && type !== "numbered_list_item")
@@ -108,19 +109,19 @@ const renderBlock = ({ block, params }) => {
          );
       case "heading_1":
          return (
-            <h1 style={colorOrBg}>
+            <h1 style={colorOrBg} id={headingIds ? id : ""}>
                <Text text={value.rich_text} />
             </h1>
          );
       case "heading_2":
          return (
-            <h2 style={colorOrBg}>
+            <h2 style={colorOrBg} id={headingIds ? id : ""}>
                <Text text={value.rich_text} />
             </h2>
          );
       case "heading_3":
          return (
-            <h3 style={colorOrBg}>
+            <h3 style={colorOrBg} id={headingIds ? id : ""}>
                <Text text={value.rich_text} />
             </h3>
          );

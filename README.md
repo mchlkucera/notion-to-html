@@ -74,6 +74,7 @@ Inline styles are used for setting text colors, backgrounds and annotations. The
 -  `forWebflow`: added classes and optimization for Webflow Richtext
 -  `uploadImages`: uploads each image to Cloudinary
 -  `pseudoNumberedList`: workaround for numbered lists
+-  `headingIds`: adds ids on headings for in-page links
 
 (Each param expects boolean value and is false by default)
 
@@ -125,6 +126,10 @@ By default, numbered lists will be converted to unordered lists. When using the 
    <span className="list-content">List content</span>
 </div>
 ```
+
+### Heading ids
+
+Adds id for h1, h2, h3 blocks. You can find the id by going into the dev tools (F12) and finding the corresponding heading. You can then use the link in the form `link.com/article#heading-id`
 
 ## Used libraries
 
