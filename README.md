@@ -86,7 +86,7 @@ Inline styles are used for setting text colors, backgrounds and annotations. The
 
 -  `forWebflow`: added classes and optimization for Webflow Richtext
 -  `uploadImages`: uploads each image to Cloudinary
--  `pseudoNumberedList`: workaround for numbered lists
+-  `improvedLists`: workaround for numbered lists
 -  `headingIds`: adds ids on headings for in-page links
 
 (Each param expects boolean value and is false by default)
@@ -129,13 +129,13 @@ Each time you have the `uploadImages` parameter set to `true`, the API will firs
 3. To your environment variables, add `CLOUDINARY_CLOUD_NAME` (cloud_name), `CLOUDINARY_API_KEY` (api_key), `CLOUDINARY_API_SECRET` (api_secret)
 4. Add `uploadImages=true` as a query param with each request
 
-## Numbered lists
+## Improved lists
 
-By default, numbered lists will be converted to unordered lists. When using the parameter `pseudoNumberedList=true` the API will replace the default `<li>` for
+By default, numbered lists will be converted to unordered lists. When using the parameter `improvedLists=true` the API will replace the default `<li>` for
 
 ```html
-<div class="numbered-list">
-   <span className="list-item-number">1.</span>
+<div class="list numbered-list">
+   <span className="list-item-marker">1.</span>
    <span className="list-item-content">List content</span>
 </div>
 ```

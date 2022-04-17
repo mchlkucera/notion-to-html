@@ -49,7 +49,7 @@ const Text = ({ text }) => {
       } = value;
       const colorOrBg = getColorOrBg(color);
       const annotationStyles = {
-         fontWeight: bold ? "bold" : "",
+         fontWeight: bold ? "600" : "",
          fontStyle: italic ? "italic" : "",
          textDecoration: strikethrough
             ? "line-through"
@@ -96,11 +96,11 @@ const Text = ({ text }) => {
    });
 };
 
-let orderedListCount = 1;
-const renderBlock = ({ block, params }) => {
+let orderedListCount = [1, 1];
+const renderBlock = ({ block, params, level = 0 }) => {
    // Param settings
    const webflow = params.webflow == "true";
-   const pseudoNumberedList = params.pseudoNumberedList == "true";
+   const improvedLists = params.improvedLists == "true";
    const headingIds = params.headingIds == "true";
 
    const { type, id } = block;
@@ -108,8 +108,9 @@ const renderBlock = ({ block, params }) => {
    const colorOrBg = value?.color && getColorOrBg(value.color);
 
    // Reset orderedListCount if this block is not numbered_list_item
-   if (orderedListCount > 1 && type !== "numbered_list_item")
-      orderedListCount = 1;
+   if (orderedListCount[level] > 1 && type !== "numbered_list_item")
+      orderedListCount[level] = 1;
+   if (level == 0) orderedListCount[1] = 1;
 
    // Handle in-page heading links
    const headingProps = type.includes("heading")
@@ -145,39 +146,61 @@ const renderBlock = ({ block, params }) => {
             </h3>
          );
       case "bulleted_list_item":
-         return (
-            <li style={colorOrBg}>
-               <Text text={value.rich_text} />
-               {value.children && (
-                  <ul className={webflow ? "ul-2nd-level" : undefined}>
-                     {value.children?.map((block) => (
-                        <Fragment key={block.id}>
-                           {renderBlock({ block, params })}
-                        </Fragment>
-                     ))}
-                  </ul>
-               )}
-            </li>
-         );
-      case "numbered_list_item":
-         orderedListCount++;
-         // render pseudo ordered list
-         if (pseudoNumberedList)
+         if (improvedLists)
             return (
-               <div className="numbered-list" style={colorOrBg}>
-                  <span className="list-item-number">
-                     {orderedListCount - 1}.
+               <div className="list bullet-list" style={colorOrBg}>
+                  <span className="list-item-marker">
+                     {level == 0 ? "•" : "∘"}
                   </span>
                   <span className="list-item-content">
                      <Text text={value.rich_text} />
                      {value.children && (
-                        <ul className={webflow ? "ul-2nd-level" : undefined}>
+                        <div className="level-2">
                            {value.children?.map((block) => (
                               <Fragment key={block.id}>
-                                 {renderBlock({ block, params })}
+                                 {renderBlock({ block, params, level: 1 })}
                               </Fragment>
                            ))}
-                        </ul>
+                        </div>
+                     )}
+                  </span>
+               </div>
+            );
+         // Render classic <li>
+         else
+            return (
+               <li style={colorOrBg}>
+                  <Text text={value.rich_text} />
+                  {value.children && (
+                     <ul className={webflow ? "ul-2nd-level" : undefined}>
+                        {value.children?.map((block) => (
+                           <Fragment key={block.id}>
+                              {renderBlock({ block, params, level: 1 })}
+                           </Fragment>
+                        ))}
+                     </ul>
+                  )}
+               </li>
+            );
+      case "numbered_list_item":
+         orderedListCount[level]++;
+         // render pseudo ordered list
+         if (improvedLists)
+            return (
+               <div className="list numbered-list" style={colorOrBg}>
+                  <span className="list-item-marker">
+                     {orderedListCount[level] - 1}.
+                  </span>
+                  <span className="list-item-content">
+                     <Text text={value.rich_text} />
+                     {value.children && (
+                        <div className="level-2">
+                           {value.children?.map((block) => (
+                              <Fragment key={block.id}>
+                                 {renderBlock({ block, params, level: 1 })}
+                              </Fragment>
+                           ))}
+                        </div>
                      )}
                   </span>
                </div>
@@ -191,7 +214,7 @@ const renderBlock = ({ block, params }) => {
                      <ul className={webflow ? "ul-2nd-level" : undefined}>
                         {value.children?.map((block) => (
                            <Fragment key={block.id}>
-                              {renderBlock({ block, params })}
+                              {renderBlock({ block, params, level: 1 })}
                            </Fragment>
                         ))}
                      </ul>
@@ -231,7 +254,7 @@ const renderBlock = ({ block, params }) => {
                <div className={webflow ? "details-content" : undefined}>
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
-                        {renderBlock({ block, params })}
+                        {renderBlock({ block, params, level: 1 })}
                      </Fragment>
                   ))}
                </div>
@@ -357,7 +380,7 @@ const renderBlock = ({ block, params }) => {
                   <Text text={value.rich_text} />
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
-                        {renderBlock({ block, params })}
+                        {renderBlock({ block, params, level: 1 })}
                      </Fragment>
                   ))}
                </div>
@@ -395,6 +418,7 @@ const renderBlock = ({ block, params }) => {
 
 const app = ({ blocks, params }) => {
    // Return html with converted blocks
+   orderedListCount = [1, 1];
    return (
       <article>
          {blocks.map((block) => (
