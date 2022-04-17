@@ -15,7 +15,7 @@
 -  heading_2
 -  heading_3
 -  bulleted_list_item
--  numbered_list_item (by default rendered as bullet list item, see optional params for setup)
+-  numbered_list_item (by default converts to bulleted list, see optional params for setup)
 -  to_do
 -  toggle
 -  child_page (link)
@@ -26,6 +26,10 @@
 -  file
 -  callout
 -  video
+
+### Unsupported blocks
+
+-  table_of_contents
 
 ## Callout styling
 
