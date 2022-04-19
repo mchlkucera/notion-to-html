@@ -4,8 +4,6 @@
 2. Run `npm run start`
 3. Access the app at `localhost:3000/[pageId]`
 
-Deployment:
-
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mchlkucera/notion-to-html)
 
 ## Current limitations
