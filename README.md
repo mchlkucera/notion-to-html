@@ -40,47 +40,10 @@
 -  table_row
 -  child_database
 
-## Callout styling
+## Styling
 
-Inline styles are used for setting text colors, backgrounds and annotations. The only place with heavy use of inline styles is the `callout` block.
-
-```jsx
-<div
-   className="callout"
-   style={{
-      padding: "16px 16px 16px 12px",
-      display: "flex",
-      borderRadius: "3px",
-      margin: "4px 0",
-      /* + border/color */
-   }}
->
-   {/* Callout icon container */}
-   <div
-      style={{
-         width: "24px",
-         height: "24px",
-         borderRadius: "3px",
-      }}
-   >
-      {/* Callout img instead of emoji handling */}
-      {icon.type !== "emoji" ? (
-         <img
-            src={imgSrc}
-            alt=""
-            style={{
-               width: "22px",
-               height: "22px",
-               objectFit: "cover",
-            }}
-         />
-      ) : (
-         icon.emoji
-      )}
-   </div>
-   <div style={{ marginLeft: "8px" }}>Callout content</div>
-</div>
-```
+Inline styles are used for setting text color, backgrounds, annotations. + On `callout` blocks, there added borders.
+See optionalParams for improved styling.
 
 ## Optional params
 
@@ -93,7 +56,7 @@ Inline styles are used for setting text colors, backgrounds and annotations. The
 
 ### Webflow optimization
 
-Use the `forWebflow` parameter to add Webflow styling optimization classes.
+Use the `forWebflow` parameter to add Webflow styling optimization classes. See my [blog post](https://myblock.webflow.io/post/how-to-make-a-notion-to-webflow-blog#47800c5f88c24ba4bbb38b1de294dd74) for copy-paste custom Webflow styles.
 
 -  Images:
    -  default Webflow styles (class `w-richtext-figure-type-image`)
