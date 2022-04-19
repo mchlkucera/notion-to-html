@@ -349,46 +349,21 @@ const renderBlock = ({ block, params, level = 0 }) => {
          const imgSrc =
             icon.type === "external" ? icon.external.url : icon.file?.url;
 
-         // Callout styles
-         const calloutStyle = {
-            padding: "16px 16px 16px 12px",
-            display: "flex",
-            borderRadius: "3px",
-            margin: "4px 0",
-         };
-
          // If !background, add a border
          const border = !value.color.includes("background")
             ? `1px solid ${textColors[colorOrBg.color]}`
             : undefined;
 
          return (
-            <div
-               className="callout"
-               style={{ border, ...colorOrBg, ...calloutStyle }}
-            >
-               <div
-                  style={{
-                     width: "24px",
-                     height: "24px",
-                  }}
-               >
+            <div className="callout" style={{ border, ...colorOrBg }}>
+               <div className="callout-icon">
                   {icon.type !== "emoji" ? (
-                     <img
-                        src={imgSrc}
-                        alt=""
-                        style={{
-                           width: "24px",
-                           height: "24px",
-                           borderRadius: "3px",
-                           objectFit: "cover",
-                        }}
-                     />
+                     <img src={imgSrc} alt="" className="callout-icon-image" />
                   ) : (
                      icon.emoji
                   )}
                </div>
-               <div style={{ marginLeft: "8px" }}>
+               <div className="callout-content">
                   <Text text={value.rich_text} />
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
