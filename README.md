@@ -53,6 +53,7 @@ See optionalParams for improved styling.
 -  `uploadImages`: uploads each image to Cloudinary
 -  `improvedLists`: workaround for numbered lists
 -  `headingIds`: adds ids on headings for in-page links
+-  `headingAnchors`: adds anchor links before each heading
 
 (Each param expects boolean value and is false by default)
 
@@ -107,9 +108,39 @@ By default, numbered lists will be converted to unordered lists. When using the 
 
 ### Heading ids
 
-Adds id for h1, h2, h3 blocks. You can find the id by going into the dev tools (F12) and finding the corresponding heading. You can then use the link in the form `link.com/article#heading-id`
+Adds id for h1, h2, h3 blocks. You can then use the link in the form `link.com/article#heading-id`. With this parameter turned on, native Notion in-document links will work.
+
+### Heading anchors
+
+Adds an `<a>` element inside h1, h2, h3 blocks. With headingAnchors turned on, headingIds will be turned on automatically.
+
+The anchor element will have the following form:
+
+```html
+<a href="#heading-id" class="heading-anchor">
+   <svg></svg>
+</a>
+```
+
+Recommended styling:
+
+````css
+/* Heading anchors */
+.heading-anchor{
+	padding-right:4px;
+  margin-left:-20px;
+  visibility:hidden;
+  line-height:1;
+  border:none!important;
+}
+h1:hover .heading-anchor,
+h2:hover .heading-anchor,
+h3:hover .heading-anchor {
+	visibility:visible;
+}```
 
 ## Used libraries
 
 -  [Notion blog to NextJS](https://github.com/samuelkraft/notion-blog-nextjs)
 -  [Notion JS Client](https://github.com/makenotion/notion-sdk-js)
+````

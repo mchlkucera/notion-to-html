@@ -118,7 +118,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const headingProps = type.includes("heading")
       ? {
            style: colorOrBg,
-           id: headingIds ? headingId : undefined,
+           id: headingIds || headingAnchors ? headingId : undefined,
         }
       : undefined;
    const linkSymbol = (
