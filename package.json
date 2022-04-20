@@ -13,10 +13,10 @@
       "express": "~4.16.1",
       "express-react-views": "^0.11.0",
       "http-errors": "~1.6.3",
-      "image-size": "^1.0.1",
       "jade": "~1.11.0",
       "morgan": "~1.9.1",
       "node-fetch": "^3.2.3",
+      "probe-image-size": "^7.2.3",
       "react": "^18.0.0",
       "react-dom": "^18.0.0"
    }

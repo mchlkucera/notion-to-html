@@ -1,5 +1,6 @@
 const { getBlocks } = require("../lib/notion");
 const cloudinary = require("cloudinary").v2;
+const probe = require("probe-image-size");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -27,6 +28,25 @@ exports.index = async (req, res) => {
          }
          return block;
       });
+
+      // Add width and height to block.image
+      const getImageDimensions = async (blocks) =>
+         await Promise.all(
+            blocks.map(async (block) => {
+               if (block.type !== "image") return block;
+
+               // Declare variables
+               const { image } = block;
+               const isTypeExternal = image.type == "external";
+               const { url } = isTypeExternal ? image.external : image.file;
+
+               // Get image dimensions
+               const { width, height } = await probe(url);
+               image.width = width;
+               image.height = height;
+               return block;
+            })
+         );
 
       // UPLOAD IMAGES
       // Find image blocks
@@ -112,8 +132,16 @@ exports.index = async (req, res) => {
             }
             return block;
          });
-         res.render("index", { blocks: updatedBlocks, params });
-      } else res.render("index", { blocks: blocksWithChildren, params });
+
+         res.render("index", {
+            blocks: await getImageDimensions(updatedBlocks),
+            params,
+         });
+      } else
+         res.render("index", {
+            blocks: await getImageDimensions(blocksWithChildren),
+            params,
+         });
    } catch (err) {
       console.log(err);
       res.status(500).send(JSON.parse(err?.body).message);

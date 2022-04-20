@@ -1,6 +1,5 @@
 const React = require("react");
 const { Fragment } = require("react");
-var sizeOf = require("image-size");
 
 const textColors = {
    default: "rgb(55, 53, 47)",
@@ -119,7 +118,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const headingProps = type.includes("heading")
       ? {
            style: colorOrBg,
-           id: headingId,
+           id: headingIds ? headingId : undefined,
         }
       : undefined;
    const linkSymbol = (
@@ -294,9 +293,6 @@ const renderBlock = ({ block, params, level = 0 }) => {
             value.type === "external" ? value.external.url : value.file.url;
          const plainCaption = value.caption ? value.caption[0]?.plain_text : "";
 
-         var dimensions = sizeOf(src);
-         console.log(dimensions);
-
          // Makes image full width by default
          // if caption is "center", image will be centered and caption hidden
          const center = webflow && plainCaption == "center";
@@ -314,6 +310,8 @@ const renderBlock = ({ block, params, level = 0 }) => {
                <div>
                   <img
                      src={src}
+                     width={value.width}
+                     height={value.height}
                      alt={plainCaption}
                      loading={webflow ? "lazy" : undefined}
                   />
