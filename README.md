@@ -137,10 +137,10 @@ h1:hover .heading-anchor,
 h2:hover .heading-anchor,
 h3:hover .heading-anchor {
 	visibility:visible;
-}```
+}
+```
 
 ## Used libraries
 
 -  [Notion blog to NextJS](https://github.com/samuelkraft/notion-blog-nextjs)
 -  [Notion JS Client](https://github.com/makenotion/notion-sdk-js)
-````
