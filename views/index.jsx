@@ -411,12 +411,14 @@ const renderBlock = ({ block, params, level = 0 }) => {
             url.indexOf("v=") + 2,
             end > 0 ? end : url.length
          );
+         const videoFigureAttributes = webflow && {
+            style: { paddingBottom: "56.206088992974244%" },
+            className:
+               "w-richtext-align-fullwidth w-richtext-figure-type-video",
+         };
+
          return (
-            <figure
-               className={
-                  webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
-               }
-            >
+            <figure {...videoFigureAttributes}>
                <iframe
                   src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
                   frameborder="0"
