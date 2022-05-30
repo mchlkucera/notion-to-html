@@ -402,21 +402,27 @@ const renderBlock = ({ block, params, level = 0 }) => {
             </div>
          );
       case "video":
+         if (value.type == "file")
+            return "❌ Uploaded videos are not supported";
+
+         const { url } = value.external;
+         const end = url.lastIndexOf("&");
+         const videoId = url.substring(
+            url.indexOf("v=") + 2,
+            end > 0 ? end : url.length
+         );
          return (
             <figure
                className={
                   webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
                }
             >
-               <video
-                  autoPlay={true}
-                  muted={true}
-                  controls={true}
-                  style={{ width: "100%" }}
-               >
-                  <source src={value.file.url} type="video/mp4" />
-                  Your browser does not support the video tag.
-               </video>
+               <iframe
+                  src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
+                  frameborder="0"
+                  sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
+                  allowfullscreen=""
+               ></iframe>
                {value.caption && (
                   <figcaption>
                      <Text text={value.caption} />
@@ -424,6 +430,29 @@ const renderBlock = ({ block, params, level = 0 }) => {
                )}
             </figure>
          );
+
+      // UPLOADED VIDEO BLOCK - URL WILL EXPIRE AFTER 1 HOUR
+      // <figure
+      //    className={
+      //       webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
+      //    }
+      // >
+      //    <video
+      //       autoPlay={true}
+      //       muted={true}
+      //       controls={true}
+      //       style={{ width: "100%" }}
+      //    >
+      //       <source src={value.file.url} type="video/mp4" />
+      //       Your browser does not support the video tag.
+      //    </video>
+      //    {value.caption && (
+      //       <figcaption>
+      //          <Text text={value.caption} />
+      //       </figcaption>
+      //    )}
+      // </figure>
+
       default:
          return `❌ Unsupported block (${
             type === "unsupported" ? "unsupported by Notion API" : type
