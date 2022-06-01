@@ -2,40 +2,60 @@ const React = require("react");
 const { Fragment } = require("react");
 
 const textColors = {
-   default: "rgb(55, 53, 47)",
-   gray: "rgb(120, 119, 116)",
-   brown: "rgb(159, 107, 83)",
-   orange: "rgb(217, 115, 13)",
-   yellow: "rgb(203, 145, 47)",
-   green: "rgb(68, 131, 97)",
-   blue: "rgb(51, 126, 169)",
-   purple: "rgb(144, 101, 176)",
-   pink: "rgb(193, 76, 138)",
-   red: "rgb(212, 76, 71)",
+   dark: {
+      default: "rgba(255, 255, 255, 0.81)",
+      gray: "rgb(155, 155, 155)",
+      brown: "rgb(186, 133, 111)",
+      orange: "rgb(199, 125, 72)",
+      yellow: "rgb(202, 152, 73)",
+      green: "rgb(82, 158, 114)",
+      blue: "rgb(94, 135, 201)",
+      purple: "rgb(157, 104, 211)",
+      pink: "rgb(209, 87, 150)",
+      red: "rgb(223, 84, 82)",
+   },
+   light: {
+      default: "rgb(55, 53, 47)",
+      gray: "rgb(120, 119, 116)",
+      brown: "rgb(159, 107, 83)",
+      orange: "rgb(217, 115, 13)",
+      yellow: "rgb(203, 145, 47)",
+      green: "rgb(68, 131, 97)",
+      blue: "rgb(51, 126, 169)",
+      purple: "rgb(144, 101, 176)",
+      pink: "rgb(193, 76, 138)",
+      red: "rgb(212, 76, 71)",
+   },
 };
 const backgroundColors = {
-   default: "rgb(241, 241, 239)",
-   gray: "rgb(241, 241, 239)",
-   brown: "rgb(244, 238, 238)",
-   orange: "rgb(251, 236, 221)",
-   yellow: "rgb(251, 243, 219)",
-   green: "rgb(237, 243, 236)",
-   blue: "rgb(231, 243, 248)",
-   purple: "rgba(244, 240, 247, 0.8)",
-   pink: "rgba(249, 238, 243, 0.8)",
-   red: "rgb(253, 235, 236)",
-};
-
-// Return `{background: bgColor}` or `{color: textColor}`
-const getColorOrBg = (color) => {
-   const hasBackground = color.includes("background");
-   if (hasBackground)
-      return { backgroundColor: backgroundColors[color.split("_")[0]] };
-   return color !== "default" ? { color: textColors[color] } : {};
+   dark: {
+      default: "rgb(25, 25, 25)",
+      gray: "rgb(47, 47, 47)",
+      brown: "rgb(74, 50, 40)",
+      orange: "rgb(92, 59, 35)",
+      yellow: "rgb(86, 67, 40)",
+      green: "rgb(36, 61, 48)",
+      blue: "rgb(20, 58, 78)",
+      purple: "rgb(60, 45, 73)",
+      pink: "rgb(78, 44, 60)",
+      red: "rgb(82, 46, 42)",
+   },
+   light: {
+      default: "rgb(241, 241, 239)",
+      gray: "rgb(241, 241, 239)",
+      brown: "rgb(244, 238, 238)",
+      orange: "rgb(251, 236, 221)",
+      yellow: "rgb(251, 243, 219)",
+      green: "rgb(237, 243, 236)",
+      blue: "rgb(231, 243, 248)",
+      purple: "rgba(244, 240, 247, 0.8)",
+      pink: "rgba(249, 238, 243, 0.8)",
+      red: "rgb(253, 235, 236)",
+   },
 };
 
 // Renders strings
-const Text = ({ text }) => {
+const Text = ({ text, getColorOrBg }) => {
    if (!text) {
       return null;
    } else if (text.length == 0) {
@@ -103,6 +123,18 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const improvedLists = params.improvedLists == "true";
    const headingIds = params.headingIds == "true";
    const headingAnchors = params.headingAnchors == "true";
+   const darkMode = params.darkMode == "true";
+
+   // Return `{background: bgColor}` or `{color: textColor}`
+   const getColorOrBg = (color) => {
+      const lightMode = darkMode ? "dark" : "light";
+      const hasBackground = color.includes("background");
+      if (hasBackground)
+         return {
+            backgroundColor: backgroundColors[lightMode][color.split("_")[0]],
+         };
+      return color !== "default" ? { color: textColors[lightMode][color] } : {};
+   };
 
    const { type, id } = block;
    const value = block[type];
@@ -147,28 +179,28 @@ const renderBlock = ({ block, params, level = 0 }) => {
       case "paragraph":
          return (
             <p style={colorOrBg}>
-               <Text text={value.rich_text} />
+               <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
             </p>
          );
       case "heading_1":
          return (
             <h1 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} />
+               <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
             </h1>
          );
       case "heading_2":
          return (
             <h2 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} />
+               <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
             </h2>
          );
       case "heading_3":
          return (
             <h3 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} />
+               <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
             </h3>
          );
       case "bulleted_list_item":
@@ -179,7 +211,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                      {level == 0 ? "•" : "∘"}
                   </span>
                   <span className="list-item-content">
-                     <Text text={value.rich_text} />
+                     <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                      {value.children && (
                         <div className="level-2">
                            {value.children?.map((block) => (
@@ -196,7 +228,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
          else
             return (
                <li style={colorOrBg}>
-                  <Text text={value.rich_text} />
+                  <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                   {value.children && (
                      <ul className={webflow ? "ul-2nd-level" : undefined}>
                         {value.children?.map((block) => (
@@ -218,7 +250,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                      {orderedListCount[level] - 1}.
                   </span>
                   <span className="list-item-content">
-                     <Text text={value.rich_text} />
+                     <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                      {value.children && (
                         <div className="level-2">
                            {value.children?.map((block) => (
@@ -235,7 +267,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
          else
             return (
                <li style={colorOrBg}>
-                  <Text text={value.rich_text} />
+                  <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                   {value.children && (
                      <ul className={webflow ? "ul-2nd-level" : undefined}>
                         {value.children?.map((block) => (
@@ -256,7 +288,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                      id={id}
                      defaultChecked={value.checked}
                   />{" "}
-                  <Text text={value.rich_text} />
+                  <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                </label>
             </div>
          );
@@ -270,11 +302,14 @@ const renderBlock = ({ block, params, level = 0 }) => {
                            <span>▶</span>
                         </div>
                         <div className="toggle-summary-content">
-                           <Text text={value.rich_text} />
+                           <Text
+                              text={value.rich_text}
+                              getColorOrBg={getColorOrBg}
+                           />
                         </div>
                      </>
                   ) : (
-                     <Text text={value.rich_text} />
+                     <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                   )}
                </summary>
                <div className={webflow ? "details-content" : undefined}>
@@ -318,7 +353,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                </div>
                {plainCaption && !center && (
                   <figcaption>
-                     <Text text={value.caption} />
+                     <Text text={value.caption} getColorOrBg={getColorOrBg} />
                   </figcaption>
                )}
             </figure>
@@ -349,7 +384,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                </pre>
                {value.caption[0]?.plain_text && (
                   <div className="code-caption">
-                     <Text text={value.caption} />
+                     <Text text={value.caption} getColorOrBg={getColorOrBg} />
                   </div>
                )}
             </div>
@@ -392,7 +427,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                   )}
                </div>
                <div className="callout-content">
-                  <Text text={value.rich_text} />
+                  <Text text={value.rich_text} getColorOrBg={getColorOrBg} />
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
                         {renderBlock({ block, params, level: 1 })}
@@ -427,7 +462,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                ></iframe>
                {value.caption && (
                   <figcaption>
-                     <Text text={value.caption} />
+                     <Text text={value.caption} getColorOrBg={getColorOrBg} />
                   </figcaption>
                )}
             </figure>
