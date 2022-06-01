@@ -127,13 +127,13 @@ const renderBlock = ({ block, params, level = 0 }) => {
 
    // Return `{background: bgColor}` or `{color: textColor}`
    const getColorOrBg = (color) => {
-      const lightMode = darkMode ? "dark" : "light";
+      const mode = darkMode ? "dark" : "light";
       const hasBackground = color.includes("background");
       if (hasBackground)
          return {
-            backgroundColor: backgroundColors[lightMode][color.split("_")[0]],
+            backgroundColor: backgroundColors[mode][color.split("_")[0]],
          };
-      return color !== "default" ? { color: textColors[lightMode][color] } : {};
+      return color !== "default" ? { color: textColors[mode][color] } : {};
    };
 
    const { type, id } = block;
