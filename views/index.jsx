@@ -468,28 +468,6 @@ const renderBlock = ({ block, params, level = 0 }) => {
             </figure>
          );
 
-      // UPLOADED VIDEO BLOCK - URL WILL EXPIRE AFTER 1 HOUR
-      // <figure
-      //    className={
-      //       webflow ? "w-richtext w-richtext-align-fullwidth" : undefined
-      //    }
-      // >
-      //    <video
-      //       autoPlay={true}
-      //       muted={true}
-      //       controls={true}
-      //       style={{ width: "100%" }}
-      //    >
-      //       <source src={value.file.url} type="video/mp4" />
-      //       Your browser does not support the video tag.
-      //    </video>
-      //    {value.caption && (
-      //       <figcaption>
-      //          <Text text={value.caption} />
-      //       </figcaption>
-      //    )}
-      // </figure>
-
       default:
          return `❌ Unsupported block (${
             type === "unsupported" ? "unsupported by Notion API" : type
