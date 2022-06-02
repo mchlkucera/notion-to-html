@@ -6,17 +6,18 @@ dotenv.config();
 
 exports.index = async (req, res) => {
    try {
+      const { token } = req.body;
       const { pageId } = req.params;
       const params = req.query;
       console.log({ params });
-      const blocks = await getBlocks(pageId);
+      const blocks = await getBlocks(token, pageId);
       const childBlocks = await Promise.all(
          blocks
             .filter((block) => block.has_children)
             .map(async (block) => {
                return {
                   id: block.id,
-                  children: await getBlocks(block.id),
+                  children: await getBlocks(token, block.id),
                };
             })
       );
