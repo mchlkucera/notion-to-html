@@ -1,8 +1,6 @@
 const { getBlocks } = require("../lib/notion");
 const cloudinary = require("cloudinary").v2;
 const probe = require("probe-image-size");
-const dotenv = require("dotenv");
-dotenv.config();
 
 exports.index = async (req, res) => {
    try {
