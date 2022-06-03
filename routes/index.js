@@ -6,7 +6,12 @@ dotenv.config();
 
 exports.index = async (req, res) => {
    try {
-      const { token } = req.body;
+      const {
+         token,
+         cloudinaryCloudName,
+         cloudinaryApiKey,
+         cloudinaryApiSecret,
+      } = req.body;
       const { pageId } = req.params;
       const params = req.query;
       console.log({ params });
@@ -58,9 +63,9 @@ exports.index = async (req, res) => {
       if (params.uploadImages == "true" && imageBlocks.length > 0) {
          // Set up cloudinary
          cloudinary.config({
-            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET,
+            cloud_name: cloudinaryCloudName,
+            api_key: cloudinaryApiKey,
+            api_secret: cloudinaryApiSecret,
          });
 
          // See if the images were already uploaded
