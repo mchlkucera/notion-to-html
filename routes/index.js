@@ -10,9 +10,12 @@ exports.index = async (req, res) => {
          cloudinaryApiKey,
          cloudinaryApiSecret,
       } = req.body;
+
       const { pageId } = req.params;
       const params = req.query;
-      console.log({ params });
+      const { remoteAddress } = req.socket;
+      console.log({ params, ip: remoteAddress, pageId });
+
       const blocks = await getBlocks(token, pageId);
       const childBlocks = await Promise.all(
          blocks

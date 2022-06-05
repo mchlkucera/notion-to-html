@@ -129,7 +129,7 @@ Note: the API prevents duplicate uploads (to save bandwidth).
 **Image upload setup:**
 
 1. Create a http://cloudinary.com/ account
-2. Get the Cloud name, Api key and Api secret, and define following keys in the request body: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the to the right values.
+2. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the to the right values.
 3. Add the `uploadImages` parameter
 
 ## Improved lists
