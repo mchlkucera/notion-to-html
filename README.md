@@ -1,14 +1,38 @@
-## Usage
+## Introduction
 
-1. Add `NOTION_TOKEN` and `NOTION_DATABASE_ID` in `.env` file
-2. Run `npm run start`
-3. Access the app at `localhost:3000/[pageId]`
+The Notion to HTML API will convert your (private) database items to HTML. You can optimise the HTML output using a few query parameters.
+If you want to convert a public Notion page to HTML. Use this [API by asnunes](https://github.com/asnunes/notion-page-to-html).
+
+## Getting started
+
+### Using the public API
+
+1. Create a Notion integration at [notion.so/my-integrations](https://www.notion.so/my-integrations), make sure you provide access to the databases you want to access.
+2. Provide a body parameter `token` with each request. The value will be the `Internal Integration Token` of your Notion integration
+3. Get the HTML of any page at `https://notion-to-html.herokuapp.com/[pageId]`. See how to get the [pageId manually](https://developers.notion.com/docs/working-with-page-content#creating-a-page-with-content).
+4. The response will be the page converted to HTML, wrapped in an `<article>` tag
+
+### Running the API locally
+
+Run `npm run start` to start the development server on `localhost:3000`
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mchlkucera/notion-to-html)
 
-## Current limitations
+### Error codes
 
--  Child blocks are only supported on **toggle** and **list** and **to_do** blocks. Child blocks only available one level deep.
+The API uses standard HTTP error codes.
+
+-  `200 - OK`: Everything worked out as expected
+-  `401 - Unauthorized`: No valid API key provided.
+-  `500 - Server error`: Something unexpected happened and the API is down
+
+## Query parameters
+
+## Current limitations and supported blocks
+
+### Limitations
+
+-  Nested child blocks are only supported on **toggle** and **list** and **to_do** blocks. These neszed child blocks are available only one level deep.
 
 ## Supported blocks
 
@@ -48,6 +72,8 @@ Inline styles are used for setting text color, backgrounds, annotations. + On `c
 See optionalParams for improved styling.
 
 ## Optional params
+
+To improve the HTMl output, you can use the following query parameters
 
 -  `forWebflow`: added classes and optimization for Webflow Richtext
 -  `uploadImages`: uploads each image to Cloudinary
@@ -144,3 +170,4 @@ h3:hover .heading-anchor {
 
 -  [Notion blog to NextJS](https://github.com/samuelkraft/notion-blog-nextjs)
 -  [Notion JS Client](https://github.com/makenotion/notion-sdk-js)
+````
