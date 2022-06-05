@@ -456,9 +456,9 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <figure {...videoFigureAttributes}>
                <iframe
                   src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
-                  frameborder="0"
+                  frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
-                  allowfullscreen=""
+                  allowFullScreen=""
                ></iframe>
                {value.caption && (
                   <figcaption>
