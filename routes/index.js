@@ -148,6 +148,6 @@ exports.index = async (req, res) => {
          });
    } catch (err) {
       console.log(err);
-      res.status(500).send(JSON.parse(err?.body).message);
+      res.status(err.status || 500).send(JSON.parse(err?.body));
    }
 };

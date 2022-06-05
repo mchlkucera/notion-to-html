@@ -15,9 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req, res) => {
-   res.status(404).json({ message: "No pageId provided" });
-});
+app.get("/", (req, res) =>
+   res.status(400).json({
+      status: 400,
+      message: "missing_pageid",
+      details: "pageId query parameter missing",
+   })
+);
 
 app.get("/:pageId", require("./routes").index);
 
