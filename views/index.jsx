@@ -56,17 +56,17 @@ const backgroundColors = {
 
 // Renders strings
 const Text = ({ text, getColorOrBg }) => {
-   if (!text) {
-      return null;
-   } else if (text.length == 0) {
-      return "ㅤ";
-   }
-   return text.map((value) => {
+   if (!text) return null;
+   else if (text.length == 0) return "ㅤ";
+   return text.map((block) => {
       // Add annotation styles
       const {
          annotations: { bold, code, color, italic, strikethrough, underline },
-         text,
-      } = value;
+         type,
+         plain_text,
+      } = block;
+
+      const value = block[type];
       const colorOrBg = getColorOrBg(color);
       const annotationStyles = {
          fontWeight: bold ? "600" : "",
@@ -77,42 +77,67 @@ const Text = ({ text, getColorOrBg }) => {
             ? "underline"
             : "",
       };
-
-      // Replace newlines with <br />
-      // + double "\n" prevention
-      const hasNewlines = text.content && text.content.includes("\n");
-      const splitNewline = hasNewlines && text.content.split("\n");
-      const textContent = !hasNewlines
-         ? text.content
-         : splitNewline.map((line, i) => (
-              <Fragment key={i}>
-                 {line}
-                 {splitNewline.length - 1 > i && <br />}
-              </Fragment>
-           ));
-
-      // Modify in-page link
-      // For in-page links keep only the part after the pound sign
-      const isInlineLink = text.link && text.link.url[0] == "/";
-      const link = !text.link
-         ? undefined
-         : isInlineLink
-         ? "#" + text.link.url.split("#")[1] // modify inline link
-         : text.link.url; // insert regular link
-
-      const linkProps = text.link && {
-         href: link,
-         target: isInlineLink ? undefined : "_blank",
+      const attributes = {
+         style: { ...colorOrBg, ...annotationStyles },
+         className: code ? "inline-code" : undefined,
       };
 
-      return (
-         <span
-            style={{ ...colorOrBg, ...annotationStyles }}
-            className={code ? "inline-code" : undefined}
-         >
-            {text.link ? <a {...linkProps}>{textContent}</a> : textContent}
-         </span>
-      );
+      switch (type) {
+         case "mention":
+            if (value.type == "date") {
+               const { start, end } = value.date;
+               return (
+                  <span {...attributes}>
+                     {start && end ? plain_text : `@${start}`}
+                  </span>
+               );
+            }
+            return (
+               <span {...attributes}>
+                  {plain_text.includes("@") ? plain_text : `@${plain_text}`}
+               </span>
+            );
+         case "text":
+            const { content, link } = value;
+            // Replace newlines with <br />
+            // + double "\n" prevention
+            const hasNewlines = content && content.includes("\n");
+            const splitNewline = hasNewlines && content.split("\n");
+            const textContent = !hasNewlines
+               ? content
+               : splitNewline.map((line, i) => (
+                    <Fragment key={i}>
+                       {line}
+                       {splitNewline.length - 1 > i && <br />}
+                    </Fragment>
+                 ));
+
+            // Modify in-page link
+            // For in-page links keep only the part after the pound sign
+            const isInlineLink = link && link.url[0] == "/";
+            const updatedLink = !link
+               ? undefined
+               : isInlineLink
+               ? "#" + text.link.url.split("#")[1] // modify inline link
+               : text.link.url; // insert regular link
+
+            const linkProps = text.link && {
+               href: updatedLink,
+               target: isInlineLink ? undefined : "_blank",
+            };
+
+            return (
+               <span {...attributes}>
+                  {text.link ? (
+                     <a {...linkProps}>{textContent}</a>
+                  ) : (
+                     textContent
+                  )}
+               </span>
+            );
+         default:
+            return "❌ Unsupported text block";
+      }
    });
 };
 
