@@ -155,7 +155,9 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
             return (
                <>
                   {link ? (
-                     <a {...linkProps}>{textContent}</a>
+                     <a {...linkProps}>
+                        {wrapContentWithAnnotations(textContent)}
+                     </a>
                   ) : (
                      wrapContentWithAnnotations(textContent)
                   )}
