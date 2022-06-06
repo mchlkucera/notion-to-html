@@ -118,21 +118,17 @@ const Text = ({ text, getColorOrBg }) => {
             const updatedLink = !link
                ? undefined
                : isInlineLink
-               ? "#" + text.link.url.split("#")[1] // modify inline link
-               : text.link.url; // insert regular link
+               ? "#" + link.url.split("#")[1] // modify inline link
+               : link.url; // insert regular link
 
-            const linkProps = text.link && {
+            const linkProps = link && {
                href: updatedLink,
                target: isInlineLink ? undefined : "_blank",
             };
 
             return (
                <span {...attributes}>
-                  {text.link ? (
-                     <a {...linkProps}>{textContent}</a>
-                  ) : (
-                     textContent
-                  )}
+                  {link ? <a {...linkProps}>{textContent}</a> : textContent}
                </span>
             );
          default:
