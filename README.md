@@ -133,8 +133,9 @@ URLs of images uploaded to Notion expire after one day. This is why each image m
 **Image upload setup:**
 
 1. Create a http://cloudinary.com/ account
-2. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the right values.
-3. Set the `uploadImages` parameter to true
+2. Click `Start configuring` under `Configure your SDK`
+3. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the right values.
+4. Set the `uploadImages` parameter to true
 
 ## Improved lists
 
