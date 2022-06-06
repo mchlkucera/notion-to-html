@@ -1,27 +1,25 @@
 # Introduction
 
-The Notion to HTML API will convert your (private) database items to HTML. You can optimise the HTML output using a few query parameters.
-If you want to convert a public Notion page to HTML. Use this [API by asnunes](https://github.com/asnunes/notion-page-to-html).
+The Notion to HTML API will convert your (private) database items to HTML. You can customise the HTML output with multiple query parameters.
+If you want to convert a public Notion page to HTML. Use this [API by @asnunes](https://github.com/asnunes/notion-page-to-html).
 
 ## Getting started
 
 ### Using the public API
 
-1. Create a Notion integration at [notion.so/my-integrations](https://www.notion.so/my-integrations) and make sure you provide access to the databases you want to access.
-2. To authorize your page, add a `token` parameter in the request body and set the value to the `Internal Integration Token` of your Notion integration
+1. Create a Notion integration at [notion.so/my-integrations](https://www.notion.so/my-integrations) and provide access to the databases you want to use.
+2. To authorize each request, add a `token` parameter in the request body and set the value to the `Internal Integration Token` of your Notion integration
 3. Get the HTML of any page at `https://notion-to-html.herokuapp.com/[pageId]`.
 
-Not sure how to get the pageId? Get it through an See how to get the [pageId manually](https://developers.notion.com/docs/working-with-page-content#creating-a-page-with-content).
+How to get the pageId? Get it with an integration or [see how get it manually](https://developers.notion.com/docs/working-with-page-content#creating-a-page-with-content:~:text=Where%20can%20I%20find%20my%20page%27s%20ID%3F) (go to "Where can I find my page's ID?").
 
 ### Running the API
 
 -  Clone this repository
--  Run `npm i` to get the required modules
+-  Run `npm install` to install dependencies
 -  Run `npm run start` to start the development server on `localhost:3000`
 
-For deployment I recommend Heroku
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mchlkucera/notion-to-html)
+For production deployment I recommend [Heroku](https://heroku.com/deploy?template=https://github.com/mchlkucera/notion-to-html)
 
 ### Error codes
 
@@ -35,7 +33,15 @@ The API uses standard HTTP error codes.
 
 ### Limitations
 
--  Nested child blocks are only supported on **toggle** and **list** and **to_do** blocks. These nested child blocks are available only one level deep.
+Nested child blocks are supported only one level depp on **toggle**, **list** and **to_do** blocks.
+
+```markdown
+-  First level list
+   -  Second level list
+      -  Third level list (unsupported)
+         > Second level toggle
+         > Third level paragraph (unsupported)
+```
 
 ## Supported blocks
 
@@ -44,10 +50,10 @@ The API uses standard HTTP error codes.
 -  heading_2
 -  heading_3
 -  bulleted_list_item
--  numbered_list_item (by default rendered as a bullet list, see [improved lists parameter](#improved-lists) for workaround)
--  to_do (converted to input type="checkbox")
+-  numbered_list_item: by default rendered as a bullet list, see [improved lists parameter](#improved-lists) for a workaround)
+-  to_do
 -  toggle
--  child_page (converted to a link)
+-  child_page
 -  image
 -  divider
 -  quote
@@ -72,18 +78,16 @@ The API uses standard HTTP error codes.
 ## Styling
 
 -  Inline styles are used for setting text color, backgrounds, annotations.
--  `callout` are automatically styled with a background color or a border
--  See [optionalParams](#optional-params) for improved styling.
+-  `callout` blocks are automatically styled with a background color or a border
+-  Add [optional parameters](#optional-params) for improved styling.
 
 # Optional params
 
-To improve the HTMl output, you can use the following query parameters. Click the link to each for more information. To apply a parameter add it to the request query: `notion-to-html.herokuapp.com/pageId?param1=true&param2=true`
-
-Each param expects a boolean value and `false` by default.
+Each param expects a boolean value and is set to `false` by default. To apply a parameter add it to the request query: `notion-to-html.herokuapp.com/pageId?param1=true&param2=true`
 
 | Key                                            | When set to true                          |
 | ---------------------------------------------- | ----------------------------------------- |
-| [`forWebflow`](#webflow-styles-optimization)   | Optimizes styling for Webflow Richtext    |
+| [`webflow`](#webflow-styles-optimization)      | Optimizes styling for Webflow Richtext    |
 | [`uploadImages`](#upload-images-to-cloudinary) | Uploads each uploaded image to Cloudinary |
 | [`improvedLists`]()                            | Workaround for numbered lists             |
 | [`headingIds`](#heading-ids)                   | Adds ids on headings for in-page links    |
@@ -92,20 +96,21 @@ Each param expects a boolean value and `false` by default.
 
 ## Webflow styles optimization
 
-Use the `forWebflow` parameter to add Webflow styling optimization classes. See my [blog post](https://myblock.webflow.io/post/how-to-make-a-notion-to-webflow-blog#47800c5f88c24ba4bbb38b1de294dd74) for copy-paste custom Webflow styles.
+`webflow` param adds classes to optimize the output for Webflow Rich Text block. See my [blog post](https://myblock.webflow.io/post/how-to-make-a-notion-to-webflow-blog#47800c5f88c24ba4bbb38b1de294dd74) for copy-paste custom Webflow styles.
 
-Images:
+Image tweaks:
 
--  Added default Webflow styles (class `w-richtext-figure-type-image`)
--  Added lazy loading
--  Images with the keyword `center` in a caption, will be centered and smaller (they have the `w-richtext-align-fullwidth` class added). The caption `center` will stay hidden
+-  Lazy loading
+-  Class `w-richtext-figure-type-image`
+-  Class `w-richtext-figure-type-fullwidth` (for images without caption `center`)
+-  Images with `center` keyword in caption will set the image to centered with the classname `w-richtext-align-center`.
 
 Other improved elements:
 
--  second level `<ul>` (added class `ul-2nd-level`)
+-  second level `<ul>` (class `ul-2nd-level`)
 -  code (class `pre-container`)
 -  dividers (class `divider`)
--  videos
+-  videos (classes `w-richtext-align-fullwidth w-richtext-figure-type-video`, default iframe styling)
 
 Toggles are changed to:
 
@@ -123,33 +128,32 @@ Toggles are changed to:
 
 ## Upload images (to Cloudinary)
 
-By default, URLs of images that are uploaded to Notion expire after one day. This is why we need to upload each image to a third party.
-Note: the API prevents duplicate uploads (to save bandwidth).
+URLs of images uploaded to Notion expire after one day. This is why each image must pe uploaded to a third party. Note: duplicate uploads are prevented.
 
 **Image upload setup:**
 
 1. Create a http://cloudinary.com/ account
-2. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the to the right values.
-3. Add the `uploadImages` parameter
+2. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the right values.
+3. Set the `uploadImages` parameter to true
 
 ## Improved lists
 
-By default, numbered lists will be converted to unordered lists. When using the parameter `improvedLists=true` the API will replace the default `<li>`
+Numbered lists will be by default converted to unordered lists. When using this parameter, the default `<li>` will be replaced by the following structure:
 
 ```html
 <div class="list numbered-list">
-   <span className="list-item-marker">1.</span>
+   <span className="list-item-marker"><!-- List number -->.</span>
    <span className="list-item-content">List content</span>
 </div>
 ```
 
 ## Heading ids
 
-Adds id for h1, h2, h3 blocks. You can then use the link in the form `link.com/article#heading-id`. With this parameter turned on, native Notion in-document links will work.
+Adds `id` to all heading blocks. With this param turned on, you can use native Notion in-document anchors. Use the link in the form `your-page.com/article-slug#heading-id`.
 
 ## Heading anchors
 
-Adds an anchor icon before each h1, h2 and h3 blocks. Adds an `<a>` element inside h1, h2, h3 blocks. This parameter works only id `headingIds` is turned on as well.
+Adds an anchor icon before each heading block. This parameter works only id `headingIds` is turned on as well.
 
 The anchor element will have the following form:
 
