@@ -152,7 +152,15 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
                };
                return create(0);
             };
-            return <>{wrapContentWithAnnotations(textContent)}</>;
+            return (
+               <>
+                  {link ? (
+                     <a {...linkProps}>{textContent}</a>
+                  ) : (
+                     wrapContentWithAnnotations(textContent)
+                  )}
+               </>
+            );
 
          default:
             return "❌ Unsupported text block";
