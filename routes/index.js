@@ -16,6 +16,24 @@ exports.index = async (req, res) => {
       const { remoteAddress } = req.socket;
       console.log({ params, ip: remoteAddress, pageId });
 
+      console.log({
+         cloudinaryCloudName,
+         cloudinaryApiKey,
+         cloudinaryApiSecret,
+      });
+
+      if (
+         params.uploadImages &&
+         (!cloudinaryCloudName || !cloudinaryApiKey | !cloudinaryApiSecret)
+      )
+         throw {
+            object: "error",
+            status: 401,
+            code: "cloudinary_unauthorized",
+            message:
+               "Cloudinary credentials are missing. Make sure you include cloudinaryCloudName, cloudinaryApiKey and cloudinaryApiSecret in the request body.",
+         };
+
       const blocks = await getBlocks(token, pageId);
       const childBlocks = await Promise.all(
          blocks
@@ -35,6 +53,8 @@ exports.index = async (req, res) => {
          }
          return block;
       });
+
+      console.log({ blocks, blocksWithChildren });
 
       // Add width and height to block.image
       const getImageDimensions = async (blocks) =>
@@ -76,8 +96,8 @@ exports.index = async (req, res) => {
                   type: "upload",
                   prefix: `notion-blog/${pageId}`,
                },
-               function (error, result) {
-                  if (error) console.log(error);
+               function (err, result) {
+                  if (err) return;
                   if (result.resources.length > 0)
                      console.log(`> FOUND ${result.resources.length} IMAGES`);
                   result.resources.map(({ public_id }) =>
@@ -117,8 +137,8 @@ exports.index = async (req, res) => {
                const response = await cloudinary.uploader.upload(
                   block.image.file.url,
                   { folder: `notion-blog/${pageId}`, public_id },
-                  (error, result) => {
-                     if (error) console.log(error);
+                  (err, result) => {
+                     if (err) return;
                      console.log({
                         message: "successfully uploaded",
                         url: result.url,
@@ -151,6 +171,20 @@ exports.index = async (req, res) => {
          });
    } catch (err) {
       console.log(err);
-      res.status(err.status || 500).send(JSON.parse(err?.body));
+      // Cloudinary error
+      if (err.error) {
+         const status = err.error.http_code || 500;
+         const body = {
+            object: "error",
+            code:
+               status === 401 ? "cloudinary_unauthorized" : "cloudinary_error",
+            status,
+            message: err.error.message,
+         };
+         return res.status(status).send(body);
+      }
+      const body = err.body ? JSON.parse(err?.body) : err;
+      const status = err.status || 500;
+      res.status(status).send(body);
    }
 };
