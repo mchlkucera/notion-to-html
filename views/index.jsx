@@ -538,11 +538,11 @@ const app = ({ blocks, params }) => {
    // Return html with converted blocks
    orderedListCount = [1, 1];
    return (
-      <article>
+      <>
          {blocks.map((block) => (
             <Fragment key={block.id}>{renderBlock({ block, params })}</Fragment>
          ))}
-      </article>
+      </>
    );
 };
 
