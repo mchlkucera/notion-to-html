@@ -226,12 +226,12 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const textProps = {
       getColorOrBg,
       htmlTags,
-      text: value.rich_text,
+      text: value?.rich_text,
    };
    const captionProps = {
       getColorOrBg,
       htmlTags,
-      text: value.caption,
+      text: value?.caption,
    };
 
    switch (type) {
