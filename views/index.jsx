@@ -170,7 +170,6 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
    });
 };
 
-let orderedListCount = [1, 1];
 const renderBlock = ({ block, params, level = 0 }) => {
    // Param settings
    const webflow = params.webflow == "true";
@@ -178,6 +177,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const headingAnchors = params.headingAnchors == "true";
    const darkMode = params.darkMode == "true";
    const htmlTags = params.htmlTags == "true";
+   const codeCopyBtn = params.codeCopyBtn == "true";
 
    // Return `{background: bgColor}` or `{color: textColor}`
    const getColorOrBg = (color) => {
@@ -193,11 +193,6 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const { type, id } = block;
    const value = block[type];
    const colorOrBg = value?.color && getColorOrBg(value.color);
-
-   // Reset orderedListCount if this block is not numbered_list_item
-   if (orderedListCount[level] > 1 && type !== "numbered_list_item")
-      orderedListCount[level] = 1;
-   if (level == 0) orderedListCount[1] = 1;
 
    const headingId = id.replace(/-/g, "");
    // Handle in-page heading links, heading anchors
@@ -231,34 +226,40 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const textProps = {
       getColorOrBg,
       htmlTags,
+      text: value.rich_text,
+   };
+   const captionProps = {
+      getColorOrBg,
+      htmlTags,
+      text: value.caption,
    };
 
    switch (type) {
       case "paragraph":
          return (
             <p style={colorOrBg}>
-               <Text text={value.rich_text} {...textProps} />
+               <Text {...textProps} />
             </p>
          );
       case "heading_1":
          return (
             <h1 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} {...textProps} />
+               <Text {...textProps} />
             </h1>
          );
       case "heading_2":
          return (
             <h2 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} {...textProps} />
+               <Text {...textProps} />
             </h2>
          );
       case "heading_3":
          return (
             <h3 {...headingProps}>
                {headingAnchor}
-               <Text text={value.rich_text} {...textProps} />
+               <Text {...textProps} />
             </h3>
          );
       case "custom_list":
@@ -275,7 +276,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
       case "numbered_list_item":
          return (
             <li style={colorOrBg}>
-               <Text text={value.rich_text} {...textProps} />
+               <Text {...textProps} />
                {value.children && (
                   <div className="level-2">
                      {value.children?.map((block) => (
@@ -287,92 +288,6 @@ const renderBlock = ({ block, params, level = 0 }) => {
                )}
             </li>
          );
-
-      //    if (improvedLists)
-      //       return (
-      //          <div className="list bullet-list" style={colorOrBg}>
-      //             <span className="list-item-marker">
-      //                {level == 0 ? "•" : "∘"}
-      //             </span>
-      //             <span className="list-item-content">
-      //                <Text text={value.rich_text} {...textProps} />
-      //                {value.children && (
-      //                   <div className="level-2">
-      //                      {value.children?.map((block) => (
-      //                         <Fragment key={block.id}>
-      //                            {renderBlock({ block, params, level: 1 })}
-      //                         </Fragment>
-      //                      ))}
-      //                   </div>
-      //                )}
-      //             </span>
-      //          </div>
-      //       );
-      //    // Render classic <li>
-      //    else
-      //       return (
-      //          <li style={colorOrBg}>
-      //             <Text text={value.rich_text} {...textProps} />
-      //             {value.children?.map((block) => (
-      //                <Fragment key={block.id}>
-      //                   {renderBlock({ block, params })}
-      //                </Fragment>
-      //             ))}
-      //             {/* {value.children && (
-      //                <ul className={webflow ? "ul-2nd-level" : undefined}>
-      //                   {value.children?.map((block) => (
-      //                      <Fragment key={block.id}>
-      //                         {renderBlock({ block, params, level: 1 })}
-      //                      </Fragment>
-      //                   ))}
-      //                </ul>
-      //             )} */}
-      //          </li>
-      //       );
-      // case "numbered_list_item":
-      //    orderedListCount[level]++;
-      //    // render pseudo ordered list
-      //    if (improvedLists)
-      //       return (
-      //          <div className="list numbered-list" style={colorOrBg}>
-      //             <span className="list-item-marker">
-      //                {orderedListCount[level] - 1}.
-      //             </span>
-      //             <span className="list-item-content">
-      //                <Text text={value.rich_text} {...textProps} />
-      //                {value.children && (
-      //                   <div className="level-2">
-      //                      {value.children?.map((block) => (
-      //                         <Fragment key={block.id}>
-      //                            {renderBlock({ block, params, level: 1 })}
-      //                         </Fragment>
-      //                      ))}
-      //                   </div>
-      //                )}
-      //             </span>
-      //          </div>
-      //       );
-      //    // render default unordered list
-      //    else
-      //       return (
-      //          <li style={colorOrBg}>
-      //             <Text text={value.rich_text} {...textProps} />
-      //             {value.children?.map((block) => (
-      //                <Fragment key={block.id}>
-      //                   {renderBlock({ block, params, level: 1 })}
-      //                </Fragment>
-      //             ))}
-      //             {/* {value.children && (
-      //                <ul className={webflow ? "ul-2nd-level" : undefined}>
-      //                   {value.children?.map((block) => (
-      //                      <Fragment key={block.id}>
-      //                         {renderBlock({ block, params, level: 1 })}
-      //                      </Fragment>
-      //                   ))}
-      //                </ul>
-      //             )} */}
-      //          </li>
-      //       );
       case "to_do":
          return (
             <div style={colorOrBg}>
@@ -382,7 +297,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                      id={id}
                      defaultChecked={value.checked}
                   />{" "}
-                  <Text text={value.rich_text} {...textProps} />
+                  <Text {...textProps} />
                </label>
             </div>
          );
@@ -396,14 +311,11 @@ const renderBlock = ({ block, params, level = 0 }) => {
                            <span>▶</span>
                         </div>
                         <div className="toggle-summary-content">
-                           <Text
-                              text={value.rich_text}
-                              getColorOrBg={getColorOrBg}
-                           />
+                           <Text getColorOrBg={getColorOrBg} />
                         </div>
                      </>
                   ) : (
-                     <Text text={value.rich_text} {...textProps} />
+                     <Text {...textProps} />
                   )}
                </summary>
                <div className={webflow ? "details-content" : undefined}>
@@ -447,7 +359,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                </div>
                {plainCaption && !center && (
                   <figcaption>
-                     <Text text={value.caption} {...textProps} />
+                     <Text {...captionProps} />
                   </figcaption>
                )}
             </figure>
@@ -465,21 +377,22 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <div style={colorOrBg} className={webflow ? "pre-container" : ""}>
                <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
-                  {/* TODO ADD PARAMETER FOR COPY BUTTON*/}
-                  <a
-                     href="#"
-                     className="copy-button"
-                     fs-copyclip-element="click"
-                     fs-copyclip-text={value.rich_text[0].plain_text}
-                     fs-copyclip-message="Copied!"
-                     fs-copyclip-duration="1000"
-                  >
-                     Copy
-                  </a>
+                  {codeCopyBtn && (
+                     <a
+                        href="#"
+                        className="copy-button"
+                        fs-copyclip-element="click"
+                        fs-copyclip-text={value.rich_text[0].plain_text}
+                        fs-copyclip-message="Copied!"
+                        fs-copyclip-duration="1000"
+                     >
+                        Copy
+                     </a>
+                  )}
                </pre>
                {value.caption[0]?.plain_text && (
                   <div className="code-caption">
-                     <Text text={value.caption} {...textProps} />
+                     <Text {...captionProps} />
                   </div>
                )}
             </div>
@@ -522,7 +435,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                   )}
                </div>
                <div className="callout-content">
-                  <Text text={value.rich_text} {...textProps} />
+                  <Text {...textProps} />
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
                         {renderBlock({ block, params, level: 1 })}
@@ -557,7 +470,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                ></iframe>
                {value.caption && (
                   <figcaption>
-                     <Text text={value.caption} {...textProps} />
+                     <Text {...captionProps} />
                   </figcaption>
                )}
             </figure>
@@ -570,17 +483,12 @@ const renderBlock = ({ block, params, level = 0 }) => {
    }
 };
 
-const app = ({ blocks, params }) => {
-   // Return html with converted blocks
-   orderedListCount = [1, 1];
-
-   return (
-      <>
-         {blocks.map((block) => (
-            <Fragment key={block.id}>{renderBlock({ block, params })}</Fragment>
-         ))}
-      </>
-   );
-};
+const app = ({ blocks, params }) => (
+   <>
+      {blocks.map((block) => (
+         <Fragment key={block.id}>{renderBlock({ block, params })}</Fragment>
+      ))}
+   </>
+);
 
 module.exports = app;

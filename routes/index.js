@@ -151,7 +151,7 @@ function transformLists(blocks) {
       // Close the list
       if (openList && (!isListBlock || !listTypeMatch)) {
          array.push(customList(openList)); // Insert
-         openList = isListBlock && !listTypeMatch ? openListItem : null; // Reset
+         openList = isListBlock && !listTypeMatch ? openListItem : null; // Initialize a new list or Reset
       }
 
       // Don't push <li> into the array
