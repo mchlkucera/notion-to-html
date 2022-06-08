@@ -128,10 +128,11 @@ function missingImageParams(params, body) {
 function transformLists(blocks) {
    let openList = null;
    const array = [];
-   const customList = (listChildren, listType) => ({
+   const customList = ({ type, id, items }) => ({
+      listChildren: items,
       type: "custom_list",
-      listType,
-      listChildren,
+      listType: type,
+      id,
    });
 
    blocks.forEach((block) => {
@@ -139,21 +140,18 @@ function transformLists(blocks) {
          block.type === "bulleted_list_item" ||
          block.type === "numbered_list_item";
       const listTypeMatch = openList?.type == block.type;
+      const openListItem = { type: block.type, items: [block], id: block.id };
 
       // Create a list
-      if (isListBlock && !openList)
-         return (openList = { type: block.type, items: [block] });
+      if (isListBlock && !openList) return (openList = openListItem);
 
       // Add an item to list
       if (isListBlock && listTypeMatch) return openList.items.push(block);
 
       // Close the list
       if (openList && (!isListBlock || !listTypeMatch)) {
-         array.push(customList(openList.items, openList.type)); // Insert
-         openList =
-            isListBlock && !listTypeMatch
-               ? { type: block.type, items: [block] }
-               : null; // Reset
+         array.push(customList(openList)); // Insert
+         openList = isListBlock && !listTypeMatch ? openListItem : null; // Reset
       }
 
       // Don't push <li> into the array
@@ -162,7 +160,7 @@ function transformLists(blocks) {
       // Push item to list
       array.push(block);
    });
-   if (openList) array.push(customList(openList.items, openList.type));
+   if (openList) array.push(customList(openList));
 
    return array;
 }

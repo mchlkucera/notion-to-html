@@ -199,11 +199,12 @@ const renderBlock = ({ block, params, level = 0 }) => {
       orderedListCount[level] = 1;
    if (level == 0) orderedListCount[1] = 1;
 
+   const headingId = id.replace(/-/g, "");
    // Handle in-page heading links, heading anchors
    const headingProps = type.includes("heading")
       ? {
            style: colorOrBg,
-           id: headingIds || headingAnchors ? id.replace(/-/g, "") : undefined,
+           id: headingIds || headingAnchors ? headingId : undefined,
         }
       : undefined;
    const linkSymbol = (
