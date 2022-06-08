@@ -174,7 +174,6 @@ let orderedListCount = [1, 1];
 const renderBlock = ({ block, params, level = 0 }) => {
    // Param settings
    const webflow = params.webflow == "true";
-   const improvedLists = params.improvedLists == "true";
    const headingIds = params.headingIds == "true";
    const headingAnchors = params.headingAnchors == "true";
    const darkMode = params.darkMode == "true";
@@ -201,11 +200,10 @@ const renderBlock = ({ block, params, level = 0 }) => {
    if (level == 0) orderedListCount[1] = 1;
 
    // Handle in-page heading links, heading anchors
-   const headingId = id.replace(/-/g, "");
    const headingProps = type.includes("heading")
       ? {
            style: colorOrBg,
-           id: headingIds || headingAnchors ? headingId : undefined,
+           id: headingIds || headingAnchors ? id.replace(/-/g, "") : undefined,
         }
       : undefined;
    const linkSymbol = (
@@ -262,82 +260,118 @@ const renderBlock = ({ block, params, level = 0 }) => {
                <Text text={value.rich_text} {...textProps} />
             </h3>
          );
+      case "custom_list":
+         return React.createElement(
+            block.listType === "bulleted_list_item" ? "ul" : "ol",
+            { key: block.id },
+            block.listChildren.map((block) => (
+               <Fragment key={block.id}>
+                  {renderBlock({ block, params })}
+               </Fragment>
+            ))
+         );
       case "bulleted_list_item":
-         if (improvedLists)
-            return (
-               <div className="list bullet-list" style={colorOrBg}>
-                  <span className="list-item-marker">
-                     {level == 0 ? "•" : "∘"}
-                  </span>
-                  <span className="list-item-content">
-                     <Text text={value.rich_text} {...textProps} />
-                     {value.children && (
-                        <div className="level-2">
-                           {value.children?.map((block) => (
-                              <Fragment key={block.id}>
-                                 {renderBlock({ block, params, level: 1 })}
-                              </Fragment>
-                           ))}
-                        </div>
-                     )}
-                  </span>
-               </div>
-            );
-         // Render classic <li>
-         else
-            return (
-               <li style={colorOrBg}>
-                  <Text text={value.rich_text} {...textProps} />
-                  {value.children && (
-                     <ul className={webflow ? "ul-2nd-level" : undefined}>
-                        {value.children?.map((block) => (
-                           <Fragment key={block.id}>
-                              {renderBlock({ block, params, level: 1 })}
-                           </Fragment>
-                        ))}
-                     </ul>
-                  )}
-               </li>
-            );
       case "numbered_list_item":
-         orderedListCount[level]++;
-         // render pseudo ordered list
-         if (improvedLists)
-            return (
-               <div className="list numbered-list" style={colorOrBg}>
-                  <span className="list-item-marker">
-                     {orderedListCount[level] - 1}.
-                  </span>
-                  <span className="list-item-content">
-                     <Text text={value.rich_text} {...textProps} />
-                     {value.children && (
-                        <div className="level-2">
-                           {value.children?.map((block) => (
-                              <Fragment key={block.id}>
-                                 {renderBlock({ block, params, level: 1 })}
-                              </Fragment>
-                           ))}
-                        </div>
-                     )}
-                  </span>
-               </div>
-            );
-         // render default unordered list
-         else
-            return (
-               <li style={colorOrBg}>
-                  <Text text={value.rich_text} {...textProps} />
-                  {value.children && (
-                     <ul className={webflow ? "ul-2nd-level" : undefined}>
-                        {value.children?.map((block) => (
-                           <Fragment key={block.id}>
-                              {renderBlock({ block, params, level: 1 })}
-                           </Fragment>
-                        ))}
-                     </ul>
-                  )}
-               </li>
-            );
+         return (
+            <li style={colorOrBg}>
+               <Text text={value.rich_text} {...textProps} />
+               {value.children && (
+                  <div className="level-2">
+                     {value.children?.map((block) => (
+                        <Fragment key={block.id}>
+                           {renderBlock({ block, params, level: 1 })}
+                        </Fragment>
+                     ))}
+                  </div>
+               )}
+            </li>
+         );
+
+      //    if (improvedLists)
+      //       return (
+      //          <div className="list bullet-list" style={colorOrBg}>
+      //             <span className="list-item-marker">
+      //                {level == 0 ? "•" : "∘"}
+      //             </span>
+      //             <span className="list-item-content">
+      //                <Text text={value.rich_text} {...textProps} />
+      //                {value.children && (
+      //                   <div className="level-2">
+      //                      {value.children?.map((block) => (
+      //                         <Fragment key={block.id}>
+      //                            {renderBlock({ block, params, level: 1 })}
+      //                         </Fragment>
+      //                      ))}
+      //                   </div>
+      //                )}
+      //             </span>
+      //          </div>
+      //       );
+      //    // Render classic <li>
+      //    else
+      //       return (
+      //          <li style={colorOrBg}>
+      //             <Text text={value.rich_text} {...textProps} />
+      //             {value.children?.map((block) => (
+      //                <Fragment key={block.id}>
+      //                   {renderBlock({ block, params })}
+      //                </Fragment>
+      //             ))}
+      //             {/* {value.children && (
+      //                <ul className={webflow ? "ul-2nd-level" : undefined}>
+      //                   {value.children?.map((block) => (
+      //                      <Fragment key={block.id}>
+      //                         {renderBlock({ block, params, level: 1 })}
+      //                      </Fragment>
+      //                   ))}
+      //                </ul>
+      //             )} */}
+      //          </li>
+      //       );
+      // case "numbered_list_item":
+      //    orderedListCount[level]++;
+      //    // render pseudo ordered list
+      //    if (improvedLists)
+      //       return (
+      //          <div className="list numbered-list" style={colorOrBg}>
+      //             <span className="list-item-marker">
+      //                {orderedListCount[level] - 1}.
+      //             </span>
+      //             <span className="list-item-content">
+      //                <Text text={value.rich_text} {...textProps} />
+      //                {value.children && (
+      //                   <div className="level-2">
+      //                      {value.children?.map((block) => (
+      //                         <Fragment key={block.id}>
+      //                            {renderBlock({ block, params, level: 1 })}
+      //                         </Fragment>
+      //                      ))}
+      //                   </div>
+      //                )}
+      //             </span>
+      //          </div>
+      //       );
+      //    // render default unordered list
+      //    else
+      //       return (
+      //          <li style={colorOrBg}>
+      //             <Text text={value.rich_text} {...textProps} />
+      //             {value.children?.map((block) => (
+      //                <Fragment key={block.id}>
+      //                   {renderBlock({ block, params, level: 1 })}
+      //                </Fragment>
+      //             ))}
+      //             {/* {value.children && (
+      //                <ul className={webflow ? "ul-2nd-level" : undefined}>
+      //                   {value.children?.map((block) => (
+      //                      <Fragment key={block.id}>
+      //                         {renderBlock({ block, params, level: 1 })}
+      //                      </Fragment>
+      //                   ))}
+      //                </ul>
+      //             )} */}
+      //          </li>
+      //       );
       case "to_do":
          return (
             <div style={colorOrBg}>
@@ -430,6 +464,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <div style={colorOrBg} className={webflow ? "pre-container" : ""}>
                <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
+                  {/* TODO ADD PARAMETER FOR COPY BUTTON*/}
                   <a
                      href="#"
                      className="copy-button"
@@ -537,6 +572,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
 const app = ({ blocks, params }) => {
    // Return html with converted blocks
    orderedListCount = [1, 1];
+
    return (
       <>
          {blocks.map((block) => (

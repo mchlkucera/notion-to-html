@@ -25,10 +25,13 @@ async function getImageDimensions(blocks) {
 
 // Check for image blocks
 // Returns BOOL
-const hasImageBlocks = (blocks) =>
-   blocks.filter(
-      (block) => block.type == "image" && block?.image.type == "file"
-   ).length > 0;
+function hasImageBlocks(blocks) {
+   return (
+      blocks.filter(
+         (block) => block.type == "image" && block?.image.type == "file"
+      ).length > 0
+   );
+}
 
 // Upload images
 // Returns new aray with uploaded Images
@@ -113,25 +116,74 @@ async function uploadImages(blocks, uploadSettings) {
    });
 }
 
-const missingImageParams = (params, body) => {
+function missingImageParams(params, body) {
    params.uploadImages &&
       !(
          body.cloudinaryCloudName &&
          body.cloudinaryApiKey &&
          body.cloudinaryApiSecret
       );
-};
+}
 
-const mergeBlocksWithChildren = (blocks, childBlocks) => {
-   return blocks.map((block) => {
+function transformLists(blocks) {
+   let openList = null;
+   const array = [];
+   const customList = (listChildren, listType) => ({
+      type: "custom_list",
+      listType,
+      listChildren,
+   });
+
+   blocks.forEach((block) => {
+      const isListBlock =
+         block.type === "bulleted_list_item" ||
+         block.type === "numbered_list_item";
+      const listTypeMatch = openList?.type == block.type;
+
+      // Create a list
+      if (isListBlock && !openList)
+         return (openList = { type: block.type, items: [block] });
+
+      // Add an item to list
+      if (isListBlock && listTypeMatch) return openList.items.push(block);
+
+      // Close the list
+      if (openList && (!isListBlock || !listTypeMatch)) {
+         array.push(customList(openList.items, openList.type)); // Insert
+         openList =
+            isListBlock && !listTypeMatch
+               ? { type: block.type, items: [block] }
+               : null; // Reset
+      }
+
+      // Don't push <li> into the array
+      if (isListBlock) return;
+
+      // Push item to list
+      array.push(block);
+   });
+   if (openList) array.push(customList(openList.items, openList.type));
+
+   return array;
+}
+
+// Merges given block arrays + transforms list blocks
+function mergeAndEditBlocks({ blocks, blocksWithChildren, params }) {
+   const improvedLists = params.improvedLists == "true";
+   const applyTransform = (array) =>
+      improvedLists ? transformLists(array) : array;
+
+   const mergedBlocks = blocks.map((block) => {
       if (block.has_children && !block[block.type].children) {
-         block[block.type]["children"] = childBlocks.find(
+         const children = blocksWithChildren.find(
             (x) => x.id === block.id
          ).children;
+         block[block.type]["children"] = applyTransform(children);
       }
       return block;
    });
-};
+   return applyTransform(mergedBlocks);
+}
 
 exports.index = async (req, res) => {
    try {
@@ -142,7 +194,7 @@ exports.index = async (req, res) => {
       const { remoteAddress } = req.socket;
 
       // Log some info about the client
-      console.log({ params, ip: remoteAddress, pageId });
+      console.log({ ip: remoteAddress, pageId });
 
       if (missingImageParams(params, body))
          throw {
@@ -152,8 +204,10 @@ exports.index = async (req, res) => {
             message: `cloudinary credentials are missing. Make sure you include cloudinaryCloudName, cloudinaryApiKey and cloudinaryApiSecret in the request body.`,
          };
 
+      // Get all blocks
       const blocks = await getBlocks(token, pageId);
-      const childBlocks = await Promise.all(
+      // Fetch child blocks
+      const blocksWithChildren = await Promise.all(
          blocks
             .filter((block) => block.has_children)
             .map(async (block) => ({
@@ -164,45 +218,42 @@ exports.index = async (req, res) => {
 
       // Check for image upload
       const doImageUpload =
-         params.uploadImages == "true" &&
-         hasImageBlocks(blocks) &&
-         hasImageBlocks(blocks);
+         params.uploadImages == "true" && hasImageBlocks(blocks);
 
       // Upload images
       if (doImageUpload) {
-         const uploadSettings = {
+         const uploadParams = {
             pageId,
             body,
          };
-
-         const newBlocks = await uploadImages(blocks, uploadSettings);
-         const newChildBlocks = await Promise.all(
-            childBlocks.map(async (block) => ({
-               id: block.id,
-               children: await uploadImages(block.children, uploadSettings),
-            }))
-         );
-
-         const blocksWithChildren = mergeBlocksWithChildren(
-            newBlocks,
-            newChildBlocks
-         );
+         const mergedBlocks = mergeAndEditBlocks({
+            blocks: await uploadImages(blocks, uploadParams),
+            blocksWithChildren: await Promise.all(
+               blocksWithChildren.map(async (block) => ({
+                  id: block.id,
+                  children: await uploadImages(block.children, uploadParams),
+               }))
+            ),
+            params,
+         });
 
          // Response
          res.render("index", {
-            blocks: await getImageDimensions(blocksWithChildren),
+            blocks: await getImageDimensions(mergedBlocks),
             params,
          });
       }
 
       // No image upload
       else {
-         const blocksWithChildren = mergeBlocksWithChildren(
+         const mergedBlocks = mergeAndEditBlocks({
             blocks,
-            childBlocks
-         );
+            blocksWithChildren,
+            params,
+         });
+
          res.render("index", {
-            blocks: await getImageDimensions(blocksWithChildren),
+            blocks: await getImageDimensions(mergedBlocks),
             params,
          });
       }
