@@ -311,7 +311,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                            <span>▶</span>
                         </div>
                         <div className="toggle-summary-content">
-                           <Text getColorOrBg={getColorOrBg} />
+                           <Text {...textProps} />
                         </div>
                      </>
                   ) : (
