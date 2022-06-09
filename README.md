@@ -85,14 +85,15 @@ Nested child blocks are supported only one level depp on **toggle**, **list** an
 
 Each param expects a boolean value and is set to `false` by default. To apply a parameter add it to the request query: `notion-to-html.herokuapp.com/pageId?param1=true&param2=true`
 
-| Key                                            | When set to true                          |
-| ---------------------------------------------- | ----------------------------------------- |
-| [`webflow`](#webflow-styles-optimization)      | Optimizes styling for Webflow Richtext    |
-| [`uploadImages`](#upload-images-to-cloudinary) | Uploads each uploaded image to Cloudinary |
-| [`improvedLists`]()                            | Workaround for numbered lists             |
-| [`headingIds`](#heading-ids)                   | Adds ids on headings for in-page links    |
-| [`headingAnchors`](#heading-anchors)           | Adds anchor links before each heading     |
-| [`darkMode`](#dark-mode)                       | Optimizes the color scheme for dark mode  |
+| Key                                            | When set to true                                      |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| [`webflow`](#webflow-styles-optimization)      | Optimizes styling for Webflow Richtext                |
+| [`uploadImages`](#upload-images-to-cloudinary) | Uploads each uploaded image to Cloudinary             |
+| [`headingIds`](#heading-ids)                   | Adds ids on headings for in-page links                |
+| [`headingAnchors`](#heading-anchors)           | Adds anchor links before each heading                 |
+| [`darkMode`](#dark-mode)                       | Optimizes the color scheme for dark mode              |
+| [`htmlTags`](#html-tags)                       | Converts annotations as HTML tags (instead of styles) |
+| [`codeCopyBtn`](#code-copy-button)             | Inserts a button for copying code blocks              |
 
 ## Webflow styles optimization
 
@@ -137,17 +138,6 @@ URLs of images uploaded to Notion expire after one day. This is why each image m
 3. Get the Cloud name, Api key and Api secret, and define following keys in the **request body**: `cloudinaryCloudName`, `cloudinaryApiKey`, `cloudinaryApiSecret` and set the right values.
 4. Set the `uploadImages` parameter to true
 
-## Improved lists
-
-Numbered lists will be by default converted to unordered lists. When using this parameter, the default `<li>` will be replaced by the following structure:
-
-```html
-<div class="list numbered-list">
-   <span className="list-item-marker"><!-- List number -->.</span>
-   <span className="list-item-content">List content</span>
-</div>
-```
-
 ## Heading ids
 
 Adds `id` to all heading blocks. With this param turned on, you can use native Notion in-document anchors. Use the link in the form `your-page.com/article-slug#heading-id`.
@@ -187,6 +177,35 @@ h3:hover .heading-anchor {
 ## Dark mode
 
 Optimizes the background and text colors for dark mode.
+
+## HTML tags
+
+Wraps each annotated text in corresponding HTML tags. (By default, annotations get converted to inline styles e.g. `<span style="font-weight:bold">text</span>`)
+
+| Annotation    | HTML tag   |
+| ------------- | ---------- |
+| bold          | `<strong>` |
+| italic        | `<i>`      |
+| strikethrough | `<strike>` |
+| inline co de  | `<code>`   |
+| underline     | `<u>`      |
+
+## Code copy button
+
+Inserts a button compatible with the FinSweets' [Copy to clipboard](https://www.finsweet.com/attributes/copy-to-clipboard) attribute in each code block.
+If turned on, the following structure is given to code blocks:
+
+```html
+<pre>
+   <code>{CODE CONTENTS}</code>
+   <a href="#" className="copy-button"
+      fs-copyclip-element="click"
+      fs-copyclip-text="{CODE CONTENTS}"
+      fs-copyclip-message="Copied!"
+      fs-copyclip-duration="1000"
+   >Copy</a>
+</pre>
+```
 
 # Used libraries
 

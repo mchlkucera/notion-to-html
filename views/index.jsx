@@ -170,7 +170,7 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
    });
 };
 
-const renderBlock = ({ block, params, level = 0 }) => {
+const renderBlock = ({ block, params }) => {
    // Param settings
    const webflow = params.webflow == "true";
    const headingIds = params.headingIds == "true";
@@ -281,7 +281,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                   <div className="level-2">
                      {value.children?.map((block) => (
                         <Fragment key={block.id}>
-                           {renderBlock({ block, params, level: 1 })}
+                           {renderBlock({ block, params })}
                         </Fragment>
                      ))}
                   </div>
@@ -321,7 +321,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                <div className={webflow ? "details-content" : undefined}>
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
-                        {renderBlock({ block, params, level: 1 })}
+                        {renderBlock({ block, params })}
                      </Fragment>
                   ))}
                </div>
@@ -438,7 +438,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                   <Text {...textProps} />
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
-                        {renderBlock({ block, params, level: 1 })}
+                        {renderBlock({ block, params })}
                      </Fragment>
                   ))}
                </div>

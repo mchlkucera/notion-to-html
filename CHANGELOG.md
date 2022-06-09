@@ -7,3 +7,4 @@
 
 -  removed improvedLists parameter (lists are now improved by default)
 -  added `htmlTags` parameter (needed for Ghost integration)
+-  added `copyCodeBtn` param
