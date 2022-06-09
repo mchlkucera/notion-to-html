@@ -166,21 +166,17 @@ function transformLists(blocks) {
 }
 
 // Merges given block arrays + transforms list blocks
-function mergeAndEditBlocks({ blocks, blocksWithChildren, params }) {
-   const improvedLists = params.improvedLists == "true";
-   const applyTransform = (array) =>
-      improvedLists ? transformLists(array) : array;
-
+function mergeAndEditBlocks(blocks, blocksWithChildren) {
    const mergedBlocks = blocks.map((block) => {
       if (block.has_children && !block[block.type].children) {
          const children = blocksWithChildren.find(
             (x) => x.id === block.id
          ).children;
-         block[block.type]["children"] = applyTransform(children);
+         block[block.type]["children"] = transformLists(children);
       }
       return block;
    });
-   return applyTransform(mergedBlocks);
+   return transformLists(mergedBlocks);
 }
 
 exports.index = async (req, res) => {
@@ -224,16 +220,15 @@ exports.index = async (req, res) => {
             pageId,
             body,
          };
-         const mergedBlocks = mergeAndEditBlocks({
-            blocks: await uploadImages(blocks, uploadParams),
-            blocksWithChildren: await Promise.all(
+         const mergedBlocks = mergeAndEditBlocks(
+            await uploadImages(blocks, uploadParams),
+            await Promise.all(
                blocksWithChildren.map(async (block) => ({
                   id: block.id,
                   children: await uploadImages(block.children, uploadParams),
                }))
-            ),
-            params,
-         });
+            )
+         );
 
          // Response
          res.render("index", {
@@ -244,11 +239,7 @@ exports.index = async (req, res) => {
 
       // No image upload
       else {
-         const mergedBlocks = mergeAndEditBlocks({
-            blocks,
-            blocksWithChildren,
-            params,
-         });
+         const mergedBlocks = mergeAndEditBlocks(blocks, blocksWithChildren);
 
          res.render("index", {
             blocks: await getImageDimensions(mergedBlocks),
