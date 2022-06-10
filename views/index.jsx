@@ -348,15 +348,13 @@ const renderBlock = ({ block, params }) => {
                      : undefined
                }
             >
-               <div>
-                  <img
-                     src={src}
-                     width={value.width}
-                     height={value.height}
-                     alt={plainCaption}
-                     loading={webflow ? "lazy" : undefined}
-                  />
-               </div>
+               <img
+                  src={src}
+                  width={value.width}
+                  height={value.height}
+                  alt={plainCaption}
+                  loading={webflow ? "lazy" : undefined}
+               />
                {plainCaption && !center && (
                   <figcaption>
                      <Text {...captionProps} />
