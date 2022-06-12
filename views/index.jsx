@@ -133,7 +133,9 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
                   </span>
                );
 
+            // Annotations, ranked by descending priority
             const annotationTags = [
+               color !== "default" && "color",
                bold && "strong",
                italic && "i",
                underline && "u",
@@ -143,14 +145,15 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
 
             const colorStyle =
                color === "default" ? undefined : { style: colorOrBg };
+            if (colorStyle) console.log(annotationTags);
             const wrapContentWithAnnotations = (content) => {
-               const contentFn = colorStyle
-                  ? () => <span {...colorStyle}>{content}</span>
-                  : () => <>{content}</>;
+               const contentFn = () => <>{content}</>;
                const all = [...annotationTags, contentFn];
                const create = (i) => {
                   const C = all[i];
                   if (!all[i]) return null;
+                  if (C === "color")
+                     return <span {...colorStyle}>{create(i + 1)}</span>;
                   if (typeof C === "string")
                      return React.createElement(all[i], null, create(i + 1));
                   return <C>{create(i + 1)}</C>;
