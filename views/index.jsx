@@ -140,8 +140,13 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
                strikethrough && "strike",
                code && "code",
             ].filter((x) => x);
+
+            const colorStyle =
+               color === "default" ? undefined : { style: colorOrBg };
             const wrapContentWithAnnotations = (content) => {
-               const contentFn = () => <>{content}</>;
+               const contentFn = colorStyle
+                  ? () => <span {...colorStyle}>{content}</span>
+                  : () => <>{content}</>;
                const all = [...annotationTags, contentFn];
                const create = (i) => {
                   const C = all[i];
