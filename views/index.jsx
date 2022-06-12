@@ -145,7 +145,6 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
 
             const colorStyle =
                color === "default" ? undefined : { style: colorOrBg };
-            if (colorStyle) console.log(annotationTags);
             const wrapContentWithAnnotations = (content) => {
                const contentFn = () => <>{content}</>;
                const all = [...annotationTags, contentFn];

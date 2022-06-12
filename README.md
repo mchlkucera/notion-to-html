@@ -180,7 +180,8 @@ Optimizes the background and text colors for dark mode.
 
 ## HTML tags
 
-Wraps each annotated text in corresponding HTML tags. (By default, annotations get converted to inline styles e.g. `<span style="font-weight:bold">text</span>`)
+Converts inline styles to corresponding HTML tags.
+For example `<span style="font-weight:bold">text</span>` changes to converted to `<strong>text</strong>`.
 
 | Annotation    | HTML tag   |
 | ------------- | ---------- |
@@ -197,10 +198,10 @@ If turned on, the following structure is given to code blocks:
 
 ```html
 <pre>
-   <code>{CODE CONTENTS}</code>
+   <code>{CODE CONTENT}</code>
    <a href="#" className="copy-button"
       fs-copyclip-element="click"
-      fs-copyclip-text="{CODE CONTENTS}"
+      fs-copyclip-text="{CODE CONTENT}"
       fs-copyclip-message="Copied!"
       fs-copyclip-duration="1000"
    >Copy</a>
