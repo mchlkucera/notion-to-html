@@ -344,7 +344,20 @@ const renderBlock = ({ block, params }) => {
          // Makes image full width by default
          // if caption is "center", image will be centered and caption hidden
          const center = webflow && plainCaption == "center";
-
+         const imgWrapper = {
+            className: "imgWrapper",
+            style: {
+               paddingTop: `${(value.width / value.height) * 100}%`,
+            },
+         };
+         const image = (
+            <img
+               src={src}
+               className="img"
+               alt={plainCaption}
+               loading={webflow ? "lazy" : undefined}
+            />
+         );
          return (
             <figure
                className={
@@ -355,13 +368,7 @@ const renderBlock = ({ block, params }) => {
                      : undefined
                }
             >
-               <img
-                  src={src}
-                  width={value.width}
-                  height={value.height}
-                  alt={plainCaption}
-                  loading={webflow ? "lazy" : undefined}
-               />
+               {webflow ? <div {...imgWrapper}>{image}</div> : image}
                {plainCaption && !center && (
                   <figcaption>
                      <Text {...captionProps} />
