@@ -42,6 +42,7 @@ async function uploadImages(blocks, uploadSettings) {
    const imageBlocks = blocks.filter(
       (block) => block.type == "image" && block?.image.type == "file"
    );
+   if (imageBlocks.length == 0) return blocks;
 
    // Configure Cloudinary
    cloudinary.config({
@@ -59,7 +60,6 @@ async function uploadImages(blocks, uploadSettings) {
          },
          function (err, result) {
             if (err) return;
-            if (result) console.log(`> Found ${result.resources.length} imgs`);
          }
       )
    );
@@ -83,9 +83,16 @@ async function uploadImages(blocks, uploadSettings) {
       } else toBeUploadedBlocks.push(block);
    });
 
+   // Log results
+   console.log({
+      operation: "CLOUDINARY UPLOAD",
+      total_found: foundImages.length,
+      image_blocks: imageBlocks.length,
+      matched: alreadyUploadedBlocks.length,
+      uploading: toBeUploadedBlocks.length,
+   });
+
    // Image upload
-   if (toBeUploadedBlocks.length > 0)
-      console.log(`> UPLOADING ${toBeUploadedBlocks.length} IMAGES`);
    const uploadedBlocks = await Promise.all(
       toBeUploadedBlocks.map(async (block) => {
          const public_id = block.image.file.url.split("/")[4];
@@ -111,6 +118,7 @@ async function uploadImages(blocks, uploadSettings) {
          block.file =
             alreadyUploadedBlocks.find((x) => x.id === block.id)?.file ||
             uploadedBlocks.find((x) => x.id === block.id)?.file;
+         return block;
       }
       return block;
    });
@@ -186,7 +194,7 @@ async function mergeAndEditBlocks(blocks, blocksWithChildren) {
 
 exports.index = async (req, res) => {
    try {
-      const { pageId } = req.params;
+      const pageId = req.params.pageId.replace("-", "");
       const { body } = req;
       const { token } = body;
       const params = req.query;
