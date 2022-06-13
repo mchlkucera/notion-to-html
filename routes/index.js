@@ -166,16 +166,21 @@ function transformLists(blocks) {
 }
 
 // Merges given block arrays + transforms list blocks
-function mergeAndEditBlocks(blocks, blocksWithChildren) {
-   const mergedBlocks = blocks.map((block) => {
-      if (block.has_children && !block[block.type].children) {
-         const children = blocksWithChildren.find(
-            (x) => x.id === block.id
-         ).children;
-         block[block.type]["children"] = transformLists(children);
-      }
-      return block;
-   });
+async function mergeAndEditBlocks(blocks, blocksWithChildren) {
+   const mergedBlocks = await Promise.all(
+      blocks.map(async (block) => {
+         if (block.has_children && !block[block.type].children) {
+            const children = blocksWithChildren.find(
+               (x) => x.id === block.id
+            ).children;
+
+            await getImageDimensions(children);
+            block[block.type]["children"] = transformLists(children);
+         }
+         return block;
+      })
+   );
+   await getImageDimensions(mergedBlocks);
    return transformLists(mergedBlocks);
 }
 
@@ -220,7 +225,7 @@ exports.index = async (req, res) => {
             pageId,
             body,
          };
-         const mergedBlocks = mergeAndEditBlocks(
+         const mergedBlocks = await mergeAndEditBlocks(
             await uploadImages(blocks, uploadParams),
             await Promise.all(
                blocksWithChildren.map(async (block) => ({
@@ -232,17 +237,19 @@ exports.index = async (req, res) => {
 
          // Response
          res.render("index", {
-            blocks: await getImageDimensions(mergedBlocks),
+            blocks: mergedBlocks,
             params,
          });
       }
 
       // No image upload
       else {
-         const mergedBlocks = mergeAndEditBlocks(blocks, blocksWithChildren);
-
+         const mergedBlocks = await mergeAndEditBlocks(
+            blocks,
+            blocksWithChildren
+         );
          res.render("index", {
-            blocks: await getImageDimensions(mergedBlocks),
+            blocks: mergedBlocks,
             params,
          });
       }

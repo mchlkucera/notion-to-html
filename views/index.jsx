@@ -345,11 +345,14 @@ const renderBlock = ({ block, params }) => {
          // Makes image full width by default
          // if caption is "center", image will be centered and caption hidden
          const center = webflow && plainCaption == "center";
+         const dimensions = (value.height / value.width) * 100;
          const imgWrapper = {
             className: "imgWrapper",
-            style: {
-               paddingTop: `${(value.height / value.width) * 100}%`,
-            },
+            style: dimensions
+               ? {
+                    paddingBottom: `${dimensions}%`,
+                 }
+               : {},
          };
          const image = (
             <img
