@@ -177,7 +177,7 @@ const Text = ({ text, getColorOrBg, htmlTags }) => {
    });
 };
 
-const renderBlock = ({ block, params }) => {
+const renderBlock = ({ block, params, level = 0 }) => {
    // Param settings
    const webflow = params.webflow == "true";
    const headingIds = params.headingIds == "true";
@@ -329,7 +329,7 @@ const renderBlock = ({ block, params }) => {
                <div className={webflow ? "details-content" : undefined}>
                   {value.children?.map((block) => (
                      <Fragment key={block.id}>
-                        {renderBlock({ block, params })}
+                        {renderBlock({ block, params, level: 2 })}
                      </Fragment>
                   ))}
                </div>
@@ -365,9 +365,11 @@ const renderBlock = ({ block, params }) => {
          return (
             <figure
                className={
-                  center
+                  level > 0 // Classes if image is nested
+                     ? "level-2"
+                     : center // Centered if caption is "centered" && webflow param is on
                      ? "w-richtext-align-center w-richtext-figure-type-image"
-                     : webflow
+                     : webflow // Webflow classes if webflow param is on
                      ? "w-richtext-align-fullwidth w-richtext-figure-type-image"
                      : undefined
                }
