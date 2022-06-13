@@ -347,7 +347,7 @@ const renderBlock = ({ block, params }) => {
          const imgWrapper = {
             className: "imgWrapper",
             style: {
-               paddingTop: `${(value.width / value.height) * 100}%`,
+               paddingTop: `${(value.height / value.width) * 100}%`,
             },
          };
          const image = (
