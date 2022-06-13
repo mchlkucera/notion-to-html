@@ -371,7 +371,7 @@ const renderBlock = ({ block, params }) => {
                      ? "w-richtext-align-fullwidth w-richtext-figure-type-image"
                      : undefined
                }
-               style={imageWrap && { maxWidth: value.width }}
+               style={wrapImages && { maxWidth: value.width }}
             >
                {wrapImages ? <div {...imgWrapper}>{image}</div> : image}
                {plainCaption && !center && (
