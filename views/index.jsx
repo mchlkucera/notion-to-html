@@ -185,6 +185,7 @@ const renderBlock = ({ block, params }) => {
    const darkMode = params.darkMode == "true";
    const htmlTags = params.htmlTags == "true";
    const codeCopyBtn = params.codeCopyBtn == "true";
+   const wrapImages = params.wrapImages == "true";
 
    // Return `{background: bgColor}` or `{color: textColor}`
    const getColorOrBg = (color) => {
@@ -368,7 +369,7 @@ const renderBlock = ({ block, params }) => {
                      : undefined
                }
             >
-               {webflow ? <div {...imgWrapper}>{image}</div> : image}
+               {wrapImages ? <div {...imgWrapper}>{image}</div> : image}
                {plainCaption && !center && (
                   <figcaption>
                      <Text {...captionProps} />
