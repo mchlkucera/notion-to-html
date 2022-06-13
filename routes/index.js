@@ -194,7 +194,7 @@ async function mergeAndEditBlocks(blocks, blocksWithChildren) {
 
 exports.index = async (req, res) => {
    try {
-      const pageId = req.params.pageId.replace("-", "");
+      const pageId = req.params.pageId.replaceAll("-", "");
       const { body } = req;
       const { token } = body;
       const params = req.query;
