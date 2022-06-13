@@ -93,7 +93,7 @@ Each param expects a boolean value and is set to `false` by default. To apply a 
 | [`headingAnchors`](#heading-anchors)           | Adds anchor links before each heading                 |
 | [`darkMode`](#dark-mode)                       | Optimizes the color scheme for dark mode              |
 | [`htmlTags`](#html-tags)                       | Converts annotations as HTML tags (instead of styles) |
-| [`codeCopyBtn`](#code-copy-button)             | Inserts a button for copying code blocks              |
+| [`copyCodeBtn`](#copy-code-button)             | Inserts a button for copying code blocks              |
 
 ## Webflow styles optimization
 
@@ -191,7 +191,7 @@ For example `<span style="font-weight:bold">text</span>` changes to converted to
 | inline co de  | `<code>`   |
 | underline     | `<u>`      |
 
-## Code copy button
+## Copy code button
 
 Inserts a button compatible with the FinSweets' [Copy to clipboard](https://www.finsweet.com/attributes/copy-to-clipboard) attribute in each code block.
 If turned on, the following structure is given to code blocks:

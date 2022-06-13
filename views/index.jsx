@@ -184,7 +184,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const headingAnchors = params.headingAnchors == "true";
    const darkMode = params.darkMode == "true";
    const htmlTags = params.htmlTags == "true";
-   const codeCopyBtn = params.codeCopyBtn == "true";
+   const copyCodeBtn = params.copyCodeBtn == "true";
    const wrapImages = params.wrapImages == "true";
 
    // Return `{background: bgColor}` or `{color: textColor}`
@@ -396,7 +396,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <div style={colorOrBg} className={webflow ? "pre-container" : ""}>
                <pre>
                   <code key={id}>{value.rich_text[0].plain_text}</code>
-                  {codeCopyBtn && (
+                  {copyCodeBtn && (
                      <a
                         href="#"
                         className="copy-button"
