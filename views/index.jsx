@@ -494,7 +494,8 @@ const renderBlock = ({ block, params, level = 0 }) => {
                )}
             </figure>
          );
-
+      case "embed":
+         return <iframe src={value.url} frameBorder="0" />;
       default:
          return `❌ Unsupported block (${
             type === "unsupported" ? "unsupported by Notion API" : type
