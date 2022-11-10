@@ -469,18 +469,29 @@ const renderBlock = ({ block, params, level = 0 }) => {
 
          const { url } = value.external;
          const end = url.lastIndexOf("&");
-         const videoId = (() => {
+         const parseVimeoUrl = (url) => {
+            var vimeoRegex =
+               /(?:vimeo)\.com.*(?:videos|video|channels|)\/([\d]+)/i;
+            var parsed = url.match(vimeoRegex);
+            return "https://player.vimeo.com/video/" + parsed[1];
+         };
+         const parseYoutubeUrl = (url) => {
+            let videoId;
             if (url.includes("youtu.be"))
-               return url.substring(
+               videoId = url.substring(
                   url.indexOf("e/") + 2,
                   end > 0 ? end : url.length
                );
             else
-               return url.substring(
+               videoId = url.substring(
                   url.indexOf("v=") + 2,
                   end > 0 ? end : url.length
                );
-         })();
+            return `https://www.youtube.com/embed/${videoId}?feature=oembed`;
+         };
+         const videoUrl = url.includes("vimeo")
+            ? parseVimeoUrl(url)
+            : parseYoutubeUrl(url);
 
          const videoFigureAttributes = webflow && {
             style: { paddingBottom: "56.206088992974244%" },
@@ -491,7 +502,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
          return (
             <figure {...videoFigureAttributes}>
                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
+                  src={videoUrl}
                   frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
                   allowFullScreen=""
