@@ -479,10 +479,11 @@ const renderBlock = ({ block, params, level = 0 }) => {
                "w-richtext-align-fullwidth w-richtext-figure-type-video",
          };
 
+         // src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
          return (
             <figure {...videoFigureAttributes}>
                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
+                  src={videoId}
                   frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
                   allowFullScreen=""
