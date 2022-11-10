@@ -38,9 +38,12 @@ function hasImageBlocks(blocks) {
 async function uploadImages(blocks, uploadSettings) {
    const { body, pageId } = uploadSettings;
 
+   console.log(blocks);
+
    // Filter blocks with images (with type file)
    const imageBlocks = blocks.filter(
-      (block) => block.type == "image" && block?.image.type == "file"
+      (block) =>
+         ["image", "video"].includes(block.type) && block?.image.type == "file"
    );
    if (imageBlocks.length == 0) return blocks;
 
