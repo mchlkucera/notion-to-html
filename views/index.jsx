@@ -469,21 +469,29 @@ const renderBlock = ({ block, params, level = 0 }) => {
 
          const { url } = value.external;
          const end = url.lastIndexOf("&");
-         const videoId = url.substring(
-            url.indexOf("v=") + 2,
-            end > 0 ? end : url.length
-         );
+         const videoId = (() => {
+            if (url.includes("youtu.be"))
+               return url.substring(
+                  url.indexOf("e/") + 2,
+                  end > 0 ? end : url.length
+               );
+            else
+               return url.substring(
+                  url.indexOf("v=") + 2,
+                  end > 0 ? end : url.length
+               );
+         })();
+
          const videoFigureAttributes = webflow && {
             style: { paddingBottom: "56.206088992974244%" },
             className:
                "w-richtext-align-fullwidth w-richtext-figure-type-video",
          };
 
-         // src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
          return (
             <figure {...videoFigureAttributes}>
                <iframe
-                  src={videoId}
+                  src={`https://www.youtube.com/embed/${videoId}?feature=oembed`}
                   frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
                   allowFullScreen=""
