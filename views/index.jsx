@@ -469,6 +469,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
 
          const { url } = value.external;
          const end = url.lastIndexOf("&");
+
          const parseVimeoUrl = (url) => {
             var vimeoRegex =
                /(?:vimeo)\.com.*(?:videos|video|channels|)\/([\d]+)/i;
