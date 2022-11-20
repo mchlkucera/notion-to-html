@@ -465,7 +465,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
             </div>
          );
       case "video":
-         if (ignoreErrors) return "";
+         if (ignoreErrors && value.type == "file") return "";
          else if (value.type == "file")
             return "❌ Uploaded videos are not supported";
 
