@@ -186,6 +186,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const htmlTags = params.htmlTags == "true";
    const copyCodeBtn = params.copyCodeBtn == "true";
    const wrapImages = params.wrapImages == "true";
+   const ignoreErrors = params.ignoreErrors == "true";
 
    // Return `{background: bgColor}` or `{color: textColor}`
    const getColorOrBg = (color) => {
@@ -464,7 +465,8 @@ const renderBlock = ({ block, params, level = 0 }) => {
             </div>
          );
       case "video":
-         if (value.type == "file")
+         if (ignoreErrors) return "";
+         else if (value.type == "file")
             return "❌ Uploaded videos are not supported";
 
          const { url } = value.external;
@@ -518,6 +520,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
       case "embed":
          return <iframe src={value.url} frameBorder="0" />;
       default:
+         if (ignoreErrors) return;
          return `❌ Unsupported block (${
             type === "unsupported" ? "unsupported by Notion API" : type
          })`;
