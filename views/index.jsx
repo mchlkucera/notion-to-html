@@ -506,6 +506,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
             <figure {...videoFigureAttributes}>
                <iframe
                   src={videoUrl}
+                  loading="lazy"
                   frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
                   allowFullScreen=""
@@ -518,7 +519,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
             </figure>
          );
       case "embed":
-         return <iframe src={value.url} frameBorder="0" />;
+         return <iframe src={value.url} loading="lazy" frameBorder="0" />;
       default:
          if (ignoreErrors) return;
          return `❌ Unsupported block (${
