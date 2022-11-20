@@ -38,12 +38,11 @@ function hasImageBlocks(blocks) {
 async function uploadImages(blocks, uploadSettings) {
    const { body, pageId } = uploadSettings;
 
-   console.log(blocks);
-
    // Filter blocks with images (with type file)
    const imageBlocks = blocks.filter(
       (block) =>
-         ["image", "video"].includes(block.type) && block?.image.type == "file"
+         (block.type == "image" && block?.image.type == "file") ||
+         (block.type == "video" && block?.video.type == "file")
    );
    if (imageBlocks.length == 0) return blocks;
 
@@ -128,12 +127,14 @@ async function uploadImages(blocks, uploadSettings) {
 }
 
 function missingImageParams(params, body) {
-   params.uploadImages &&
+   return (
+      params.uploadImages &&
       !(
          body.cloudinaryCloudName &&
          body.cloudinaryApiKey &&
          body.cloudinaryApiSecret
-      );
+      )
+   );
 }
 
 function transformLists(blocks) {
