@@ -507,9 +507,8 @@ const renderBlock = ({ block, params, level = 0 }) => {
                <iframe
                   src={videoUrl}
                   loading="lazy"
-                  frameBorder="0"
                   sandbox="allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-same-origin"
-                  allowFullScreen=""
+                  allowFullScreen="true"
                ></iframe>
                {value.caption && (
                   <figcaption>
