@@ -9,9 +9,17 @@ function getBlocksFromHtml(html) {
 
 exports.index = async (req, res) => {
     try {
-        res.status(200).send(getBlocksFromHtml(req.query.text));
+        if (!req.body.html) {
+            throw({
+                status: 400,
+                message: "missing_html",
+                details: "html body missing",
+             })
+        }
+
+        res.status(200).send(getBlocksFromHtml(req.body.html));
     }
-    catch (error) {
+    catch (err) {
       console.log(err);
       const body = err.body ? JSON.parse(err?.body) : err;
       const status = err.status || 500;
