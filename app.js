@@ -23,6 +23,7 @@ app.get("/", (req, res) =>
    })
 );
 
+app.get("/html-to-notion", require("./routes/htmlToNotion").index);
 app.get("/:pageId", require("./routes").index);
 
 // catch 404 and forward to error handler
