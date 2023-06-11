@@ -187,6 +187,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
    const copyCodeBtn = params.copyCodeBtn == "true";
    const wrapImages = params.wrapImages == "true";
    const ignoreErrors = params.ignoreErrors == "true";
+   const hideImageCaptions = params.hideImageCaptions == "true";
 
    // Return `{background: bgColor}` or `{color: textColor}`
    const getColorOrBg = (color) => {
@@ -377,7 +378,7 @@ const renderBlock = ({ block, params, level = 0 }) => {
                style={wrapImages ? { maxWidth: value.width } : {}}
             >
                {wrapImages ? <div {...imgWrapper}>{image}</div> : image}
-               {plainCaption && !center && (
+               {plainCaption && !center && !hideImageCaptions && (
                   <figcaption>
                      <Text {...captionProps} />
                   </figcaption>
